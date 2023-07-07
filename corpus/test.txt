@@ -1,0 +1,87 @@
+=====
+Test Game
+=====
+game scarbarrow [
+
+	title {The Scarbarrow Incident}
+	by {Sam Phillips}
+
+	version 0.1
+	created {today}
+
+	traits night|day, raining|dry
+	states hot|mild|cold, bright|dull
+
+	it is day, bright, mild
+	{
+		It is a lovely day in the quaint village of Scarbarrow. You are in a shed.
+	}
+
+	enter shed
+
+	object ship-in-bottle [
+		{
+			A dusty green bottle with something inside.
+		}
+		on smash [
+			{
+				The bottle smashes into a thousand shards and a mess of wood and tangled string scatters onto the floor.
+			}
+			bottle is gone
+			broken-glass is here
+			ship is here, smashed
+		]
+		on examine [
+			{There's a tiny, ornate, wooden boat inside.}
+		]
+	]
+
+	location shed [
+		it is dull, dusty
+		{
+			a ramshackle garden shed
+		}
+		ship-in-bottle is here
+		exits
+			south to garden
+	]
+
+	location garden [
+		{
+			A slighty overgrown kitchen garden.
+		}
+		exits
+			south to kitchen,
+			north to shed,
+			west to pond,
+			east to tree
+	]
+
+	location kitchen [
+		{
+			a {if is raining then {dingy} else {jolly}} kitchen
+		}
+
+		exits
+			south to shed,
+			down to basement
+	]
+
+	location kitchen [
+		it is dark, dusty, cold
+		{
+			A dark and spooky basement.
+		}
+
+		exits
+			up to kitchen
+	]
+
+//	category table [
+//		{ A wooden table }
+//		on get {
+//			it's too heavy to carry
+//		}
+//	]
+]
+---
