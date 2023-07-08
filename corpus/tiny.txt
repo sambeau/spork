@@ -1,0 +1,5 @@
+=====
+Test Game
+=====
+game scarbarrow [title {The Scarbarrow Incident}]
+---
