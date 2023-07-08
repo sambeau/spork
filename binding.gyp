@@ -1,7 +1,7 @@
 {
   "targets": [
     {
-      "target_name": "tree_spork_binding",
+      "target_name": "tree_sitter_spork_binding",
       "include_dirs": [
         "<!(node -e \"require('nan')\")",
         "src"
