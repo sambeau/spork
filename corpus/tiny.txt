@@ -1,5 +1,11 @@
 =====
 Test Game
 =====
-game scarbarrow [title {The Scarbarrow Incident}]
+game scarbarrow-incident [
+	title {The Scarbarrow Incident {2}
+	by {Sam Phillips}
+
+	version 0.1
+	created {today}
+]
 ---
