@@ -8,7 +8,7 @@ module.exports = grammar({
 				'game',
 				field('game_name', optional($.name)),
 				'[',
-				field('game_body', $._statements),
+				$._statements,
 				']',
 			),
 		//
@@ -19,7 +19,7 @@ module.exports = grammar({
 					$.is_statement,
 					$.trait_statement,
 					$.state_statement,
-					$.text,
+					field('text', $.text),
 					$.enter_statement,
 					$.location,
 					$.object,
