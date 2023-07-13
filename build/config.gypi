@@ -407,6 +407,16 @@
     "want_separate_host_toolset": 0,
     "xcode_version": "13.0",
     "nodedir": "/Users/sam/Library/Caches/node-gyp/20.1.0",
-    "standalone_static_library": 1
+    "standalone_static_library": 1,
+    "metrics_registry": "https://registry.npmjs.org/",
+    "global_prefix": "/usr/local",
+    "local_prefix": "/Users/sam/Dev/tree-sitter-spork",
+    "globalconfig": "/usr/local/etc/npmrc",
+    "userconfig": "/Users/sam/.npmrc",
+    "init_module": "/Users/sam/.npm-init.js",
+    "node_gyp": "/usr/local/lib/node_modules/npm/node_modules/node-gyp/bin/node-gyp.js",
+    "cache": "/Users/sam/.npm",
+    "user_agent": "npm/9.6.4 node/v20.1.0 darwin x64 workspaces/false",
+    "prefix": "/usr/local"
   }
 }

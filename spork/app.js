@@ -1,9 +1,21 @@
+// app
+
 const readline = require('node:readline')
+const fs = require('fs')
+const pluralize = require('pluralize')
+const Articles = require('articles')
 
 const Parser = require('tree-sitter')
 const spork = require('../../tree-sitter-spork')
 
+// console.log(AvsAnSimple)
 let tree
+
+const list_formatter = new Intl.ListFormat('en', {
+	style: 'long',
+	type: 'conjunction',
+})
+const pluralRules = new Intl.PluralRules()
 
 const error = (node, text) => {
 	const sourceCode = tree.input
@@ -160,14 +172,27 @@ const evalGame = (game) => {
 	return scope
 }
 
+const isAre = (noun, n) => {
+	// todo: check for irregular here
+	switch (pluralRules.select(n)) {
+		case 'one':
+			return 'is ' + Articles.articlize(noun)
+		case 'other':
+			return 'are ' + pluralize(noun)
+	}
+}
 const runLocation = (game) => {
 	const location = game.locations[game.location]
 	const exits = Object.keys(location.exits)
+
+	console.log('')
 	console.log('You are in', location.texts + '.')
 	console.log(
-		'There are exits to the',
-		exits.join(', ') + '.',
+		'There',
+		isAre('exit', exits.length),
+		list_formatter.format(exits) + '.',
 	)
+	console.log('')
 }
 
 const runUpdate = (game) => {
@@ -183,14 +208,32 @@ const runSetup = (game) => {
 
 	runUpdate(game)
 }
+const cleanCommand = (c) => {
+	switch (c) {
+		case 'n':
+			return 'north'
+		case 's':
+			return 'south'
+		case 'e':
+			return 'east'
+		case 'w':
+			return 'west'
+		case 'u':
+			return 'up'
+		case 'd':
+			return 'down'
+	}
+	// nothing to change
+	return c
+}
 
 const runCommand = (game, command) => {
 	const location = game.locations[game.location]
+	command = cleanCommand(command)
 	for ([direction, exit] of Object.entries(
 		location.exits,
 	)) {
 		if (direction === command) {
-			// console.log('moving to', exit.to)
 			game.location = exit.to
 			return true
 		}
@@ -212,6 +255,8 @@ const runGame = (game) => {
 	rl.on('line', (line) => {
 		const command = line.trim()
 		switch (command) {
+			case '':
+				break
 			case 'help':
 				console.log('Help here…')
 				break
@@ -234,65 +279,18 @@ const runGame = (game) => {
 const main = () => {
 	const parser = new Parser()
 	parser.setLanguage(spork)
-	const sourceCode = `
-	game scarbarrow-incident [
+	const fs = require('fs')
+	let sourceCode
+	try {
+		sourceCode = fs.readFileSync(
+			'games/scarbarrow.spk',
+			'utf8',
+		)
+	} catch (err) {
+		console.error(err)
+		process.exit(1)
+	}
 
-		title {The Scarbarrow Incident {2}}
-		by {Sam {{Phillips}}}
-
-		version 0.1
-		created {{today}}
-
-		{
-			# Welcome
-		}
-		{
-			It is a lovely day in the quaint village of Scarbarrow. The sun is shining and the bords are singing.
-		}
-
-		start in shed
-
-		location shed [
-			it is dull, dusty
-			{
-				a ramshackle garden shed
-			}
-			ship-in-bottle is here
-			exits south to garden
-		]
-
- 		location garden [
- 			{
- 				A slighty overgrown kitchen garden.
- 			}
- 			exits
- 				south to kitchen,
- 				north to shed,
- 				west to pond,
- 				east to tree
- 		]
-
- 		location kitchen [
- 			{
- 				a {if is raining then {dingy} else {jolly}} kitchen
- 			}
-
- 			exits
- 				south to shed,
- 				down to basement
- 		]
-
- 		location basement [
- 			it is dark, dusty, cold
- 			{
- 				A dark and spooky basement.
- 			}
-
- 			exits
- 				up to kitchen
- 		]
-	]
-	`
 	tree = parser.parse(sourceCode)
 	const game = evalGame(tree.rootNode)
 	// console.log(JSON.stringify(game, null, 2))

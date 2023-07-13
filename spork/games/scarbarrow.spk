@@ -1,0 +1,136 @@
+game scarbarrow-incident [
+
+	title {The Scarbarrow Incident 2}
+	by {Sam Phillips}
+
+	version 0.1
+	created {{today}}
+
+	{
+		# Welcome
+	}
+	{
+		It is a lovely day in the quaint village of Scarbarrow.
+		The sun is shining and the birds are singing
+	}
+
+	start in shed
+
+	location shed [
+
+		it is dull, dusty
+		{
+			a ramshackle garden shed
+		}
+
+		ship-in-bottle is here
+
+		exits
+			south to garden
+	]
+
+	location garden [
+		{
+			A slighty overgrown kitchen garden
+		}
+		exits
+			south to kitchen,
+			north to shed,
+			west to pond,
+			east to tree
+	]
+
+	location pond [
+		{
+			a peaceful pond covered in lily-pads
+		}
+		exits
+			east to garden,
+			north to veg-patch,
+			south to conservatory
+	]
+
+	location veg-patch [
+		{ a well-tended veg patch busting with cabbages and runner beans}
+		exits
+			south to pond
+	]
+
+	location tree [
+		{
+			the shadow of a giant oak tree
+		}
+		exits
+			west to garden,
+			north to orchard
+	]
+
+	location orchard [
+		{
+			a little orchard with a dozen apple and pear trees
+		}
+		exits
+			south to tree
+	]
+
+	location kitchen [
+
+		{
+			a country-style kitchen with range and an oak wooden table
+		}
+
+		exits
+			north to garden,
+			south to hall,
+			down to basement
+	]
+
+	location hall [
+		{a hallway with a tiled floor and a steep staircase}
+		exits
+			north to kitchen,
+			west to living-room,
+			east to dining-room,
+	//		up to landing
+	]
+
+	location living-room [
+		{a cosy living room with a handsome fireplace and a large sofa}
+		exits
+			east to hall,
+			north to conservatory
+	]
+
+	location dining-room [
+		{a smart-looking dining room with a large polished table}
+		exits
+			north to study,
+			west to hall
+	]
+
+	location study [
+		{a small study with a view down the garden to the orchard. The walls are lined with books and there's a small desk by the window}
+		exits
+			south to dining-room
+	]
+
+	location conservatory [
+		{a glass conservatory with wicker chairs and a lovely view of the pond}
+		exits
+			south to living-room,
+			east to kitchen,
+			north to pond
+	]
+
+	location basement [
+
+		it is dark, dusty, cold
+
+		{
+			A dark and spooky basement
+		}
+
+		exits
+			up to kitchen
+	]
+]

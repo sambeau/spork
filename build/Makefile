@@ -326,13 +326,13 @@ $(obj).$(TOOLSET)/%.o: $(obj)/%.S FORCE_DO_CMD
 
 ifeq ($(strip $(foreach prefix,$(NO_LOAD),\
     $(findstring $(join ^,$(prefix)),\
-                 $(join ^,tree_sitter_YOUR_LANGUAGE_NAME_binding.target.mk)))),)
-  include tree_sitter_YOUR_LANGUAGE_NAME_binding.target.mk
+                 $(join ^,tree_sitter_spork_binding.target.mk)))),)
+  include tree_sitter_spork_binding.target.mk
 endif
 
 quiet_cmd_regen_makefile = ACTION Regenerating $@
-cmd_regen_makefile = cd $(srcdir); /usr/local/lib/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/Users/sam/Library/Caches/node-gyp/20.1.0" "-Dnode_gyp_dir=/usr/local/lib/node_modules/node-gyp" "-Dnode_lib_file=/Users/sam/Library/Caches/node-gyp/20.1.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/Users/sam/Dev/spork" "-Dnode_engine=v8" "--depth=." "-Goutput_dir=." "--generator-output=build" -I/Users/sam/Dev/spork/build/config.gypi -I/usr/local/lib/node_modules/node-gyp/addon.gypi -I/Users/sam/Library/Caches/node-gyp/20.1.0/include/node/common.gypi "--toplevel-dir=." binding.gyp
-Makefile: $(srcdir)/build/config.gypi $(srcdir)/binding.gyp $(srcdir)/../../../../usr/local/lib/node_modules/node-gyp/addon.gypi $(srcdir)/../../Library/Caches/node-gyp/20.1.0/include/node/common.gypi
+cmd_regen_makefile = cd $(srcdir); /Users/sam/Dev/tree-sitter-spork/node_modules/node-gyp/gyp/gyp_main.py -fmake --ignore-environment "-Dlibrary=shared_library" "-Dvisibility=default" "-Dnode_root_dir=/Users/sam/Library/Caches/node-gyp/20.1.0" "-Dnode_gyp_dir=/Users/sam/Dev/tree-sitter-spork/node_modules/node-gyp" "-Dnode_lib_file=/Users/sam/Library/Caches/node-gyp/20.1.0/<(target_arch)/node.lib" "-Dmodule_root_dir=/Users/sam/Dev/tree-sitter-spork" "-Dnode_engine=v8" "--depth=." "-Goutput_dir=." "--generator-output=build" -I/Users/sam/Dev/tree-sitter-spork/build/config.gypi -I/Users/sam/Dev/tree-sitter-spork/node_modules/node-gyp/addon.gypi -I/Users/sam/Library/Caches/node-gyp/20.1.0/include/node/common.gypi "--toplevel-dir=." binding.gyp
+Makefile: $(srcdir)/../../Library/Caches/node-gyp/20.1.0/include/node/common.gypi $(srcdir)/node_modules/node-gyp/addon.gypi $(srcdir)/build/config.gypi $(srcdir)/binding.gyp
 	$(call do_cmd,regen_makefile)
 
 # "all" is a concatenation of the "all" targets from all the included

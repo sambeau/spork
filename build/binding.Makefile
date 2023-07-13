@@ -3,4 +3,4 @@
 export builddir_name ?= ./build/.
 .PHONY: all
 all:
-	$(MAKE) tree_sitter_YOUR_LANGUAGE_NAME_binding
+	$(MAKE) tree_sitter_spork_binding
