@@ -56,13 +56,13 @@ module.exports = grammar({
 				repeat(seq(',', $.name)),
 			),
 		//
-		trait_statement: ($) => seq('traits', $.trait_list),
-		trait_list: ($) =>
+		trait_statement: ($) => seq('traits', $._trait_list),
+		_trait_list: ($) =>
 			seq($.trait_def, repeat(seq(',', $.trait_def))),
 		trait_def: ($) => seq($.name, '|', $.name),
 		//
-		state_statement: ($) => seq('states', $.state_list),
-		state_list: ($) =>
+		state_statement: ($) => seq('states', $._state_list),
+		_state_list: ($) =>
 			seq($.state_def, repeat(seq(',', $.state_def))),
 		state_def: ($) =>
 			seq(
@@ -70,17 +70,17 @@ module.exports = grammar({
 				repeat(seq('|', $.name)),
 			),
 		//
-		enter_statement: ($) => seq('enter', $.name),
+		enter_statement: ($) => seq('start', optional('in'), $.name),
 		//
 		location: ($) =>
 			seq(
 				'location',
 				$.name,
 				'[',
-				$.location_statements,
+				$._location_statements,
 				']',
 			),
-		location_statements: ($) =>
+		_location_statements: ($) =>
 			repeat1(
 				choice(
 					$.is_statement,
@@ -118,10 +118,10 @@ module.exports = grammar({
 				'object',
 				$.name,
 				'[',
-				$.object_statements,
+				$._object_statements,
 				']',
 			),
-		object_statements: ($) =>
+		_object_statements: ($) =>
 			repeat1(
 				choice(
 					$.is_statement,
@@ -134,8 +134,8 @@ module.exports = grammar({
 			),
 		//
 		on_statement: ($) =>
-			seq('on', $.name, '[', $.on_statements, ']'),
-		on_statements: ($) =>
+			seq('on', $.name, '[', $._on_statements, ']'),
+		_on_statements: ($) =>
 			repeat1(
 				choice(
 					$.is_statement,
@@ -147,16 +147,25 @@ module.exports = grammar({
 		//
 		text: ($) =>
 			seq(
-				'{',
+				$._start_text,
 				repeat(choice($.words, $.newline, $.code)),
-				'}',
+				$._end_text,
 			),
-		words: () => /[^\s{}]+/,
-		code: ($) => $.text,
-		newline: () => /[\r\n][\r\n]/,
+		_start_text: () => '{',
+		_end_text: () => '}',
+		words: () => field('words', /[^\s{}]+/),
+		code: ($) => field('code',
+			seq(
+				$._start_text,
+				choice($.name, $.int, $.float, $.text),
+				$._end_text
+			),
+
+		),
+		newline: () => field('nl', /[\r\n][\r\n]/),
 		//
 		value: ($) =>
-			choice($.text, $.int, $.float, $.name),
+			choice($.name, $.int, $.float, $.text),
 		int: () => /[\+\-]?[0-9]+/,
 		float: () => /[\+\-]?[0-9]+\.[0-9]+/,
 		// use the same identifiers as Javascript, only allow dashes in the middle, e.g. hot-house
