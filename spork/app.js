@@ -17,6 +17,9 @@ const list_formatter = new Intl.ListFormat('en', {
 })
 const pluralRules = new Intl.PluralRules()
 
+pluralize.addUncountableRule('junk')
+pluralize.addUncountableRule('cutlery')
+
 const error = (node, text) => {
 	const sourceCode = tree.input
 	const sourceLines = sourceCode.split('\n')
@@ -70,7 +73,7 @@ const evalLocation = (scope, loc) => {
 		exits: evalExits(scope, loc.exitsNodes),
 		// defs: loc.isNodes,
 		name: loc.nameNode.text,
-		// objects: loc.objectNodes,
+		objects: evalObjects(scope, loc.objectNodes),
 		// states: loc.stateNodes,
 		texts: evalTexts(scope, loc.textNodes),
 		// traits: loc.traitNode,
@@ -103,6 +106,29 @@ const evalExit = (scope, exits) => {
 	// console.log(exit_defs)
 
 	return exit_defs
+}
+
+const evalObject = (scope, obj) => {
+	// console.log(obj.fields)
+	return {
+		// defs: loc.isNodes,
+		name: obj.nameNode.text,
+		noun: obj.nounNode.text,
+		// objects: evalObjects(scope, loc.objectNodes),
+		// states: loc.stateNodes,
+		texts: evalTexts(scope, obj.textNodes),
+		// traits: loc.traitNode,
+	}
+}
+
+const evalObjects = (scope, objs) => {
+	// console.log(objs)
+	let objects = {}
+	objs.forEach((obj) => {
+		const object = evalObject(scope, obj)
+		objects[object.name] = object
+	})
+	return objects
 }
 
 const evalStart = (scope, game) => {
@@ -171,8 +197,16 @@ const evalGame = (game) => {
 
 	return scope
 }
-
-const isAre = (noun, n) => {
+const isAreNoun = (noun) => {
+	// todo: check for irregular here
+	switch (pluralize.isPlural(noun)) {
+		case false:
+			return 'is ' + noun
+		case true:
+			return 'are ' + noun
+	}
+}
+const isAreArticalPlural = (noun, n) => {
 	// todo: check for irregular here
 	switch (pluralRules.select(n)) {
 		case 'one':
@@ -185,11 +219,33 @@ const runLocation = (game) => {
 	const location = game.locations[game.location]
 	const exits = Object.keys(location.exits)
 
+	const objects = location.objects
+	const objectNames = Object.keys(objects)
+	let objectDescriptions = []
+	if (objectNames.length > 0)
+		objectDescriptions = objectNames.map((name) => {
+			const noun = objects[name].noun
+			if (pluralize.isSingular(noun))
+				return Articles.articlize(noun)
+			return noun
+		})
+	// console.log(objectDescriptions)
+
 	console.log('')
 	console.log('You are in', location.texts + '.')
+	if (objectDescriptions.length > 0) {
+		objectDescriptions[0] = isAreNoun(
+			objectDescriptions[0],
+		)
+		console.log(
+			'There',
+			list_formatter.format(objectDescriptions),
+			'here.',
+		)
+	}
 	console.log(
 		'There',
-		isAre('exit', exits.length),
+		isAreArticalPlural('exit', exits.length),
 		list_formatter.format(exits) + '.',
 	)
 	console.log('')

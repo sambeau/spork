@@ -22,7 +22,12 @@ game scarbarrow-incident [
 		{
 			a ramshackle garden shed
 		}
-
+		object crowbar (crowbar)[
+			{a hefty iron crowbar}
+		]
+		object ship-in-bottle (bottle)[
+			{a clear glass bottle with a model ship inside}
+		]
 		ship-in-bottle is here
 
 		exits
@@ -33,6 +38,15 @@ game scarbarrow-incident [
 		{
 			A slighty overgrown kitchen garden
 		}
+		object flowers (flowers) [
+			{scented roses}
+		]
+		object garden-gnome (garden-gnome) [
+			{a brightly painted garden gnome carrying a fishing rod}
+		]
+		object watering-can (watering-can) [
+			{a rusty, green watering can}
+		]
 		exits
 			south to kitchen,
 			north to shed,
@@ -44,6 +58,9 @@ game scarbarrow-incident [
 		{
 			a peaceful pond covered in lily-pads
 		}
+		object fishes (fishes) [
+			{golden fishes}
+		]
 		exits
 			east to garden,
 			north to veg-patch,
@@ -52,6 +69,15 @@ game scarbarrow-incident [
 
 	location veg-patch [
 		{ a well-tended veg patch busting with cabbages and runner beans}
+		object carrots (carrots) [
+			{rows of tasty-looking carrots}
+		]
+		object carrots (cabbages) [
+			{fat, green and purple cabbages}
+		]
+		object beans (beans) [
+			{runner beans dangling from trellises}
+		]
 		exits
 			south to pond
 	]
@@ -69,6 +95,12 @@ game scarbarrow-incident [
 		{
 			a little orchard with a dozen apple and pear trees
 		}
+		object apples (apples) [
+			{bright red apples hanging from the tree}
+		]
+		object pears (pears) [
+			{juicy-looking golden pears}
+		]
 		exits
 			south to tree
 	]
@@ -76,9 +108,17 @@ game scarbarrow-incident [
 	location kitchen [
 
 		{
-			a country-style kitchen with range and an oak wooden table
+			a country-style kitchen
 		}
-
+		object kitchen-table (table) [
+			{a large oak table}
+		]
+		object range (range) [
+			{a hefty iron range}
+		]
+		object rug (rug) [
+			{a small frayed rug}
+		]
 		exits
 			north to garden,
 			south to hall,
@@ -87,6 +127,9 @@ game scarbarrow-incident [
 
 	location hall [
 		{a hallway with a tiled floor and a steep staircase}
+		object umbrella (umbrella) [
+			{a black umbrella with a bone handle}
+		]
 		exits
 			north to kitchen,
 			west to living-room,
@@ -96,6 +139,9 @@ game scarbarrow-incident [
 
 	location living-room [
 		{a cosy living room with a handsome fireplace and a large sofa}
+		object sideboard (sideboard) [
+			{a wooden sideboard}
+		]
 		exits
 			east to hall,
 			north to conservatory
@@ -103,6 +149,16 @@ game scarbarrow-incident [
 
 	location dining-room [
 		{a smart-looking dining room with a large polished table}
+
+		object teapot (teapot) [
+			{an old clay teapot}
+		]
+		object crockery (crockery) [
+			{fine china crockery}
+		]
+		object cutlery (cutlery) [
+			{silver cutlery}
+		]
 		exits
 			north to study,
 			west to hall
@@ -110,12 +166,18 @@ game scarbarrow-incident [
 
 	location study [
 		{a small study with a view down the garden to the orchard. The walls are lined with books and there's a small desk by the window}
+		object books (books)[
+			{a variety of books}
+		]
 		exits
 			south to dining-room
 	]
 
 	location conservatory [
 		{a glass conservatory with wicker chairs and a lovely view of the pond}
+		object torch (torch)[
+			{a heft rubber torch}
+		]
 		exits
 			south to living-room,
 			east to kitchen,
@@ -129,7 +191,9 @@ game scarbarrow-incident [
 		{
 			A dark and spooky basement
 		}
-
+		object junk (junk-pile)[
+			{various boxes and crates}
+		]
 		exits
 			up to kitchen
 	]

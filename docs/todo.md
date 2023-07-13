@@ -1,4 +1,4 @@
-TODO
-====
+# TODO
 
-- add date type
+-   add date type
+-   fix a cutlery, a crockery & a junk

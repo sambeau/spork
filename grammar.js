@@ -130,7 +130,10 @@ module.exports = grammar({
 		object: ($) =>
 			seq(
 				'object',
-				$.name,
+				field('name', $.name),
+				'(',
+				field('noun', $.name),
+				')',
 				'[',
 				$._object_statements,
 				']',
@@ -138,12 +141,13 @@ module.exports = grammar({
 		_object_statements: ($) =>
 			repeat1(
 				choice(
-					$.is_statement,
-					$.trait_statement,
-					$.state_statement,
-					$.text,
-					$.on_statement,
-					$.object,
+					field('is', $.is_statement),
+					field('trait', $.trait_statement),
+					field('state', $.state_statement),
+					field('text', $.text),
+					field('exits', $.exits_statement),
+					field('object', $.object),
+					field('on', $.on_statement),
 				),
 			),
 		//
