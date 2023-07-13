@@ -283,19 +283,43 @@ const cleanCommand = (c) => {
 	return c
 }
 
+const objectsByNouns = (objects) => {
+	objs = {}
+	const objectNames = Object.keys(objects)
+	objectNames.forEach(
+		(name) =>
+			(objs[objects[name].noun] = objects[name]),
+	)
+	return objs
+}
+const directionsRx = /^north|south|east|west|up|down$/
+const examineRx = /^ex(amine)?\s+([a-zA-Z][a-zA-Z\-0-9]*)$/
+
+const isDirection = (d) => d.match(directionsRx) !== null
 const runCommand = (game, command) => {
 	const location = game.locations[game.location]
 	command = cleanCommand(command)
-	for ([direction, exit] of Object.entries(
-		location.exits,
-	)) {
-		if (direction === command) {
-			game.location = exit.to
-			return true
+	if (isDirection(command)) {
+		for ([direction, exit] of Object.entries(
+			location.exits,
+		)) {
+			if (direction === command) {
+				game.location = exit.to
+				return true
+			}
 		}
+		console.log("You can't go that way.")
+		return false
 	}
-	console.log("You can't go that way.")
-	return false
+	const examine = command.match(examineRx)
+	if (examine !== null) {
+		const objectNoun = examine[2]
+		const objByNouns = objectsByNouns(location.objects)
+		const object = objByNouns[objectNoun]
+		console.log('\n' + object.texts + '.\n')
+		return false
+	}
+	console.log("\nSorry, I didn't understand that.\n")
 }
 
 const runGame = (game) => {
