@@ -28,17 +28,16 @@ const evalCreatedDate = (scope, game) => {
 	return evalDate(evalText(scope, getNodeValue(game.dateNodes)));
 };
 
-const evalVersion = (scope, game) => {
-	return Number(getNodeValue(game.versionNodes).text);
-};
-
 const evalDate = date => {
 	return date; //convert to Date at some point
 };
 
-const evalSingleText = (scope, textNode) => {
-	if (textNode.type === 'code') return evalCode(scope, textNode.codeNodes);
-	else return textNode.text;
+const evalVersion = (scope, game) => {
+	return Number(getNodeValue(game.versionNodes).text);
+};
+
+const evalLocations = (scope, game) => {
+	return game.locationNodes;
 };
 
 const evalText = (scope, textNode) => {
@@ -85,7 +84,7 @@ const evalGame = game => {
 	// do locations last
 	//
 
-	// scope.locations = evalTexts(scope, game.locationNodes);
+	scope.locations = evalLocations(scope, game);
 	// scope.locations = evalTexts(scope, game.locationNodes);
 
 	return scope;
@@ -114,6 +113,10 @@ const main = () => {
 		{
 			It is a lovely day in the quaint village of Scarbarrow. You are in a shed.
 		}
+
+		location shed [
+			{ a cosy garden shed }
+		]
 	]
 	`;
 	tree = parser.parse(sourceCode);

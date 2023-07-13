@@ -21,7 +21,7 @@ module.exports = grammar({
 					$.state_statement,
 					field('text', $.text),
 					$.enter_statement,
-					$.location,
+					field('location', $.location),
 					$.object,
 				),
 			),
