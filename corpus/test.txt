@@ -17,7 +17,7 @@ game scarbarrow [
 		It is a lovely day in the quaint village of Scarbarrow. You are in a shed.
 	}
 
-	enter shed
+	start in shed
 
 	object ship-in-bottle [
 		{

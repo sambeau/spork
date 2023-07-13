@@ -2,7 +2,7 @@
 Test Game
 =====
 game scarbarrow-incident [
-	title {The Scarbarrow Incident {2}
+	title {The Scarbarrow Incident {2}}
 	by {Sam Phillips}
 
 	version 0.1
