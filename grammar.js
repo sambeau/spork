@@ -20,7 +20,7 @@ module.exports = grammar({
 					$.trait_statement,
 					$.state_statement,
 					field('text', $.text),
-					$.enter_statement,
+					field('start', $.start_statement),
 					field('location', $.location),
 					$.object,
 				),
@@ -56,12 +56,14 @@ module.exports = grammar({
 				repeat(seq(',', $.name)),
 			),
 		//
-		trait_statement: ($) => seq('traits', $._trait_list),
+		trait_statement: ($) =>
+			seq('traits', $._trait_list),
 		_trait_list: ($) =>
 			seq($.trait_def, repeat(seq(',', $.trait_def))),
 		trait_def: ($) => seq($.name, '|', $.name),
 		//
-		state_statement: ($) => seq('states', $._state_list),
+		state_statement: ($) =>
+			seq('states', $._state_list),
 		_state_list: ($) =>
 			seq($.state_def, repeat(seq(',', $.state_def))),
 		state_def: ($) =>
@@ -70,12 +72,17 @@ module.exports = grammar({
 				repeat(seq('|', $.name)),
 			),
 		//
-		enter_statement: ($) => seq('start', optional('in'), $.name),
+		start_statement: ($) =>
+			seq(
+				'start',
+				optional('in'),
+				field('location', $.name),
+			),
 		//
 		location: ($) =>
 			seq(
 				'location',
-				$.name,
+				field('name', $.name),
 				'[',
 				$._location_statements,
 				']',
@@ -83,26 +90,33 @@ module.exports = grammar({
 		_location_statements: ($) =>
 			repeat1(
 				choice(
-					$.is_statement,
-					$.trait_statement,
-					$.state_statement,
-					$.text,
-					$.exit_statement,
-					$.object,
+					field('is', $.is_statement),
+					field('trait', $.trait_statement),
+					field('state', $.state_statement),
+					field('text', $.text),
+					field('exits', $.exits_statement),
+					field('object', $.object),
 				),
 			),
 		//
-		exit_statement: ($) =>
-			choice(
-				seq('exit', $.exit_def),
+		exits_statement: ($) =>
+			seq(
+				'exits',
 				seq(
-					'exits',
 					$.exit_def,
 					repeat(seq(',', $.exit_def)),
 				),
 			),
-		exit_def: ($) => seq($.exit, 'to', $.name),
-		exit: () =>
+		exit_def: ($) =>
+			seq(
+				field('direction', $.direction),
+				'to',
+				field('location', $.name),
+				// add an optional block here
+				// e.g. [{The door creaks loudly as you open it. You step through.} dog is awake]
+			),
+
+		direction: () =>
 			choice(
 				'north',
 				'south',
@@ -154,14 +168,15 @@ module.exports = grammar({
 		_start_text: () => '{',
 		_end_text: () => '}',
 		words: () => field('words', /[^\s{}]+/),
-		code: ($) => field('code',
-			seq(
-				$._start_text,
-				choice($.name, $.int, $.float, $.text),
-				$._end_text
+		code: ($) =>
+			field(
+				'code',
+				seq(
+					$._start_text,
+					choice($.name, $.int, $.float, $.text),
+					$._end_text,
+				),
 			),
-
-		),
 		newline: () => field('nl', /[\r\n][\r\n]/),
 		//
 		value: ($) =>

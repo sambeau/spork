@@ -17,7 +17,7 @@ game scarbarrow [
 		It is a lovely day in the quaint village of Scarbarrow. You are in a shed.
 	}
 
-	start in shed
+	enter shed
 
 	object ship-in-bottle [
 		{
@@ -67,7 +67,7 @@ game scarbarrow [
 			down to basement
 	]
 
-	location kitchen [
+	location basement [
 		it is dark, dusty, cold
 		{
 			A dark and spooky basement.
@@ -77,11 +77,40 @@ game scarbarrow [
 			up to kitchen
 	]
 
-//	category table [
+//	object category table [
 //		{ A wooden table }
+//      has size 100
+//		contains a drawer
 //		on get {
 //			it's too heavy to carry
 //		}
 //	]
+
+	container category bag [
+		it is portable
+		it has space of 12
+		it has size [
+			when empty
+				1
+			otherwise
+				13 - space
+		]
+
+		action(put|place|add thing in|into it)[
+			if space >= size of thing [
+				insert thing into it
+				space = space - size of thing
+			]
+			action(get|remove thing from it)[
+				remove thing from bag
+				space = space + size of thing
+				thing is held
+			]
+			action (look|check|describe in|inside|contents |of| it) [
+				{a large brown hessian sack}
+				for thing in it describe
+				// this will get commas automatically as it will his 'say' as a list
+			]
+	]
 ]
 ---
