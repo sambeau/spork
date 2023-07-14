@@ -1,3 +1,7 @@
+//
+// Grammar for Spork — a text adventure language interpreter
+//
+
 module.exports = grammar({
 	name: 'spork',
 
