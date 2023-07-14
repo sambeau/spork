@@ -12,6 +12,15 @@ const pluralRules = new Intl.PluralRules()
 pluralize.addUncountableRule('junk')
 pluralize.addUncountableRule('cutlery')
 
+const isAre = (noun) => {
+	// todo: check for irregular here
+	switch (pluralize.isPlural(noun)) {
+		case false:
+			return 'is'
+		case true:
+			return 'are'
+	}
+}
 const isAreNoun = (noun) => {
 	// todo: check for irregular here
 	switch (pluralize.isPlural(noun)) {
@@ -135,6 +144,16 @@ const runCommand = (game, command) => {
 		const objectNoun = examine[2]
 		const objByNouns = objectsByNouns(location.objects)
 		const object = objByNouns[objectNoun]
+		if (object === undefined) {
+			console.log(
+				'\nThere',
+				isAre(objectNoun),
+				'no',
+				objectNoun,
+				'here.\n',
+			)
+			return false
+		}
 		console.log('\n' + object.texts + '.\n')
 		return false
 	}
@@ -162,7 +181,6 @@ const runGame = (game) => {
 			case 'quit!':
 				console.log('Bye!')
 				process.exit(0)
-				break
 			default:
 				const understood = runCommand(game, command)
 				if (understood) runUpdate(game)
