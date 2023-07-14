@@ -176,7 +176,7 @@ game scarbarrow-incident [
 	location conservatory [
 		{a glass conservatory with wicker chairs and a lovely view of the pond}
 		object torch (torch)[
-			{a heft rubber torch}
+			{a hefty rubber torch}
 		]
 		exits
 			south to living-room,
