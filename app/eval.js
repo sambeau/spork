@@ -1,5 +1,6 @@
+let parseTree
 const error = (node, text) => {
-	const sourceCode = tree.input
+	const sourceCode = parseTree.input // this is ugly
 	const sourceLines = sourceCode.split('\n')
 	const errorLine = sourceLines[node.startPosition.row]
 
@@ -147,6 +148,7 @@ const evalCode = (scope, code) => {
 const evalGame = (game) => {
 	// console.log(game.children)
 	// console.log(game.fields)
+	parseTree = game
 	let scope = {
 		today: new Date().toLocaleDateString(
 			undefined,
