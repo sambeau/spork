@@ -1,5 +1,6 @@
 # TODO
 
+-   organise newlines, fullstops etc
 -   add date type
 -   fix a cutlery, a crockery & a junk
 -   tree-sitter for commands
