@@ -36,7 +36,7 @@ game scarbarrow-incident [
 
 	location garden [
 		{
-			A slighty overgrown kitchen garden
+			a slighty overgrown kitchen garden
 		}
 		object flowers (flowers) [
 			{scented roses}
