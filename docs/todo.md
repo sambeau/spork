@@ -9,3 +9,7 @@
 -   examine handheld things
 -   scenery vs objects
 -   long descriptions on first entry
+-   description
+-   markdown?
+-   location kitchen ~ (dingy) kitchen
+-   object watering-can ~ (watering) can
