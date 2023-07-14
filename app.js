@@ -6,7 +6,7 @@ const pluralize = require('pluralize')
 const Articles = require('articles')
 
 const Parser = require('tree-sitter')
-const spork = require('../../tree-sitter-spork')
+const spork = require('./tree-sitter-spork')
 
 // console.log(AvsAnSimple)
 let tree
