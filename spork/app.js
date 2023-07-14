@@ -266,6 +266,8 @@ const runSetup = (game) => {
 }
 const cleanCommand = (c) => {
 	switch (c) {
+		case 'l':
+			return 'look'
 		case 'n':
 			return 'north'
 		case 's':
@@ -299,6 +301,8 @@ const isDirection = (d) => d.match(directionsRx) !== null
 const runCommand = (game, command) => {
 	const location = game.locations[game.location]
 	command = cleanCommand(command)
+
+	if (command === 'look') return true // enter room again
 	if (isDirection(command)) {
 		for ([direction, exit] of Object.entries(
 			location.exits,
