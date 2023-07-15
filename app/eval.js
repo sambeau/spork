@@ -1,3 +1,5 @@
+const { commandToRegex } = require('./command.js')
+
 let parseTree
 const error = (node, text) => {
 	const sourceCode = parseTree.input // this is ugly
@@ -88,11 +90,16 @@ const evalExit = (scope, exits) => {
 }
 
 const evalObject = (scope, obj) => {
-	// console.log(obj.fields)
+	// console.log(obj.onNodes)
 	return {
 		// defs: loc.isNodes,
 		name: obj.nameNode.text,
 		noun: obj.nounNode.text,
+		onCommands: evalOnCommands(
+			scope,
+			obj.nounNode.text,
+			obj.onNodes,
+		),
 		// objects: evalObjects(scope, loc.objectNodes),
 		// states: loc.stateNodes,
 		texts: evalTexts(scope, obj.textNodes),
@@ -108,6 +115,56 @@ const evalObjects = (scope, objs) => {
 		objects[object.name] = object
 	})
 	return objects
+}
+
+const evalOnCommands = (scope, objectNouns, onCommands) => {
+	let comsLists = []
+	onCommands.forEach((onCom) => {
+		const text = evalTexts(scope, onCom.textNodes)
+		let wordList = []
+		onCom.commandNode.wordsNode.children.forEach(
+			(word) => {
+				// console.log(word.type)
+				switch (word.type) {
+					case 'it':
+						wordList.push({ type: 'it' })
+						break
+					case 'thing':
+						wordList.push({ type: 'thing' })
+						break
+					case 'name':
+						wordList.push({
+							type: 'word',
+							word: word.text,
+						})
+						break
+					case 'optional_words':
+						wordList.push({
+							type: 'optional',
+							words: word.wordsNodes.map(
+								(w) => w.text,
+							),
+						})
+						break
+					case 'synonyms':
+						wordList.push({
+							type: 'choice',
+							words: word.wordNodes.map(
+								(w) => w.text,
+							),
+						})
+				}
+			},
+		)
+		comsLists.push({
+			regex: commandToRegex([objectNouns], wordList), // todo: upgrade to real nounlist
+			text: text,
+		})
+	})
+	// console.log(comsLists)
+	// console.log(JSON.stringify(comsLists, null, 2))
+
+	return comsLists
 }
 
 const evalStart = (scope, game) => {
@@ -174,7 +231,7 @@ const evalGame = (game) => {
 		scope,
 		game.locationNodes,
 	)
-
+	// console.log(JSON.stringify(scope, null, 2))
 	return scope
 }
 

@@ -26,7 +26,16 @@ game scarbarrow-incident [
 			{a hefty iron crowbar}
 		]
 		object ship-in-bottle (bottle)[
-			{a clear glass bottle with a model ship inside}
+			{an ancient glass bottle covered in years of dust}
+			on((drop|break|smash) it)[
+				{It smashes into a thousand peices to reveal
+					a tangled mess of wood, thread and paper}
+			]
+			on((wipe|clean|rub|polish) it (with sleeve))[
+				it is clean
+				{You remove the dust to revel the contents of
+					the bottle—an intricate model ship with sails and rigging}
+			]
 		]
 		ship-in-bottle is here
 
