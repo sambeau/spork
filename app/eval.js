@@ -300,8 +300,6 @@ const evalGame = (game) => {
 	scope.author = evalAuthor(scope, game)
 	scope.date = evalCreatedDate(scope, game)
 	scope.version = evalVersion(scope, game)
-	console.log(game.fields)
-	console.log(game.objectNodes)
 	scope.objects = evalObjects(scope, game.objectNodes)
 	scope.text = evalTexts(scope, game.textNodes)
 	scope.start = evalStart(scope, game)
@@ -318,7 +316,6 @@ const evalGame = (game) => {
 	upDateEntitiesFacts(scope, extraFacts)
 
 	// console.log(JSON.stringify(scope, null, 2))
-	console.log(scope.objects)
 	return scope
 }
 
