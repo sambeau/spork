@@ -48,20 +48,46 @@ const evalVersion = (scope, game) => {
 	return Number(getNodeValue(game.versionNodes).text)
 }
 
+const upDateEntitiesFacts = (scope, extraFacts) => {
+	const entities = Object.keys(scope.entities)
+	Object.keys(extraFacts).forEach((e) => {
+		if (scope.entities[e]) {
+			scope.entities[e].facts = {
+				...scope.entities[e].facts,
+				...extraFacts[e],
+			}
+			// console.log(scope.entities[e])
+		} else {
+			console.log("Error: Can't find entity: ", e)
+		}
+	})
+}
+
 const evalLocation = (scope, loc) => {
 	// console.log(loc.fields)
 	const name = loc.nameNode.text
 	const location = {
-		exits: evalExits(scope, loc.exitsNodes),
-		// defs: loc.isNodes,
-		name: loc.nameNode.text,
-		objects: evalObjects(scope, loc.objectNodes),
-		// states: loc.stateNodes,
-		texts: evalTexts(scope, loc.textNodes),
-		// traits: loc.traitNode,
+		name: name,
 	}
+
+	location.facts = {}
+	let extraFacts = evalFacts(
+		scope,
+		location.facts,
+		loc.isNodes,
+	)
+
+	location.exits = evalExits(scope, loc.exitsNodes)
+	location.objects = evalObjects(scope, loc.objectNodes)
+	location.states = loc.stateNodes
+	location.texts = evalTexts(scope, loc.textNodes)
+	location.traits = loc.traitNode
+
 	// register with game
 	scope.entities[name] = location
+
+	// update extra facts
+	upDateEntitiesFacts(scope, extraFacts)
 	return location
 }
 
@@ -100,17 +126,29 @@ const evalObject = (scope, obj) => {
 		// defs: loc.isNodes,
 		name: name,
 		noun: obj.nounNode.text,
-		onCommands: evalOnCommands(
-			scope,
-			obj.nounNode.text,
-			obj.onNodes,
-		),
-		// objects: evalObjects(scope, loc.objectNodes),
-		// states: loc.stateNodes,
-		texts: evalTexts(scope, obj.textNodes),
-		// traits: loc.traitNode,
 	}
-	scope.entities[name] = object // register entity
+	object.facts = {}
+	let extraFacts = evalFacts(
+		scope,
+		object.facts,
+		obj.isNodes,
+	)
+
+	object.onCommands = evalOnCommands(
+		scope,
+		obj.nounNode.text,
+		obj.onNodes,
+	)
+	// object.objects = evalObjects(scope, loc.objectNodes),
+	// object.states = loc.stateNodes,
+	object.texts = evalTexts(scope, obj.textNodes)
+	// object.traits = loc.traitNode,
+
+	scope.entities[name] = object // register entity before fact update
+
+	// update extra facts
+	upDateEntitiesFacts(scope, extraFacts)
+
 	return object
 }
 
@@ -274,21 +312,9 @@ const evalGame = (game) => {
 	)
 
 	// apply the extra facts
+	upDateEntitiesFacts(scope, extraFacts)
 
-	const entities = Object.keys(scope.entities)
-	Object.keys(extraFacts).forEach((e) => {
-		if (scope.entities[e]) {
-			scope.entities[e].facts = {
-				...scope.entities[e].facts,
-				...extraFacts[e],
-			}
-			// console.log(scope.entities[e])
-		} else {
-			console.log("Error: Can't find entity: ", e)
-		}
-	})
-
-	// console.log(JSON.stringify(scope, null, 2))
+	console.log(JSON.stringify(scope, null, 2))
 
 	return scope
 }
