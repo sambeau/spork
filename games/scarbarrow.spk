@@ -60,7 +60,6 @@ game scarbarrow-incident [
 				{You'd need a corkscrew for that}
 			]
 		]
-		ship-in-bottle is here
 
 		exits
 			south to garden
