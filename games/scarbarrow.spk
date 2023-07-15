@@ -14,11 +14,19 @@ game scarbarrow-incident [
 		The sun is shining and the birds are singing
 	}
 
+	it is sunny, not cold
+	it is not raining
+//	bells are not ringing
+//	dogs are barking, hungry, distant
+	shed is cold, damp, draughty
+	garden is buzzing
+	basement is not light
+
 	start in shed
 
 	location shed [
 
-		it is dull, dusty
+		it is dull, dusty, ramshackle
 		{
 			a ramshackle garden shed
 		}
@@ -28,7 +36,7 @@ game scarbarrow-incident [
 		object ship-in-bottle (bottle)[
 			{an ancient glass bottle covered in years of dust}
 			on((drop|break|smash) it)[
-				{It smashes into a thousand peices to reveal
+				{It smashes into a thousand pieces to reveal
 					a tangled mess of wood, thread and paper}
 			]
 			on((wipe|clean|rub|polish) it (with sleeve))[
@@ -193,7 +201,9 @@ game scarbarrow-incident [
 	]
 
 	location study [
-		{a small study with a view down the garden to the orchard. The walls are lined with books and there's a small desk by the window}
+		{a small study with a view down the garden to the orchard.
+			The walls are lined with books and there's a small desk by the window}
+
 		object books (books)[
 			{a variety of books}
 		]

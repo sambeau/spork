@@ -50,7 +50,8 @@ const evalVersion = (scope, game) => {
 
 const evalLocation = (scope, loc) => {
 	// console.log(loc.fields)
-	return {
+	const name = loc.nameNode.text
+	const location = {
 		exits: evalExits(scope, loc.exitsNodes),
 		// defs: loc.isNodes,
 		name: loc.nameNode.text,
@@ -59,6 +60,9 @@ const evalLocation = (scope, loc) => {
 		texts: evalTexts(scope, loc.textNodes),
 		// traits: loc.traitNode,
 	}
+	// register with game
+	scope.entities[name] = location
+	return location
 }
 
 const evalLocations = (scope, locs) => {
@@ -91,9 +95,10 @@ const evalExit = (scope, exits) => {
 
 const evalObject = (scope, obj) => {
 	// console.log(obj.onNodes)
-	return {
+	const name = obj.nameNode.text
+	const object = {
 		// defs: loc.isNodes,
-		name: obj.nameNode.text,
+		name: name,
 		noun: obj.nounNode.text,
 		onCommands: evalOnCommands(
 			scope,
@@ -105,6 +110,8 @@ const evalObject = (scope, obj) => {
 		texts: evalTexts(scope, obj.textNodes),
 		// traits: loc.traitNode,
 	}
+	scope.entities[name] = object // register entity
+	return object
 }
 
 const evalObjects = (scope, objs) => {
@@ -167,12 +174,40 @@ const evalOnCommands = (scope, objectNouns, onCommands) => {
 	return comsLists
 }
 
+const evalFacts = (scope, current, facts) => {
+	let extraFacts = {}
+	facts.forEach((f) => {
+		// it is sunny
+		if (f.subjectNode.itNode) {
+			f.valuesNodes.forEach((v) => {
+				if (v.type == 'boolean') {
+					current[v.valueNode.text] =
+						!v.negativeNode
+				}
+			})
+		} else {
+			// dogs are barking
+			const thing = f.subjectNode.nameNode.text
+			if (!extraFacts[thing]) extraFacts[thing] = {}
+			f.valuesNodes.forEach((v) => {
+				if (v.type == 'boolean') {
+					extraFacts[thing][v.valueNode.text] =
+						!v.negativeNode
+				}
+			})
+		}
+	})
+
+	return extraFacts
+}
+
 const evalStart = (scope, game) => {
 	if (game.startNodes.length === 0)
 		error(game, 'game has no start')
 	return game.startNodes[game.startNodes.length - 1]
 		.locationNode.text
 }
+
 const evalText = (scope, textNode) => {
 	return textNode.children
 		.map((w) => {
@@ -211,27 +246,50 @@ const evalGame = (game) => {
 			undefined,
 			undefined,
 		),
+		entities: {},
 	}
 	if (game.type !== 'game')
 		error(game.children[0], "'game' expected")
 
 	scope.name = game.gameNameNode.text
+	scope.facts = {}
+	let extraFacts = evalFacts(
+		scope,
+		scope.facts,
+		game.isNodes,
+	)
 	scope.title = evalTitle(scope, game)
 	scope.author = evalAuthor(scope, game)
 	scope.date = evalCreatedDate(scope, game)
 	scope.version = evalVersion(scope, game)
 	scope.text = evalTexts(scope, game.textNodes)
-	scope.start = evalStart(scope, game) //game.gameStartNode
+	scope.start = evalStart(scope, game)
 
 	//
 	// do locations last
 	//
-
 	scope.locations = evalLocations(
 		scope,
 		game.locationNodes,
 	)
-	console.log(JSON.stringify(scope, null, 2))
+
+	// apply the extra facts
+
+	const entities = Object.keys(scope.entities)
+	Object.keys(extraFacts).forEach((e) => {
+		if (scope.entities[e]) {
+			scope.entities[e].facts = {
+				...scope.entities[e].facts,
+				...extraFacts[e],
+			}
+			// console.log(scope.entities[e])
+		} else {
+			console.log("Error: Can't find entity: ", e)
+		}
+	})
+
+	// console.log(JSON.stringify(scope, null, 2))
+
 	return scope
 }
 

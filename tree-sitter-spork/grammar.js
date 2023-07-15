@@ -20,7 +20,7 @@ module.exports = grammar({
 			repeat1(
 				choice(
 					$._header_statement,
-					$.is_statement,
+					field('is', $.is_statement),
 					$.trait_statement,
 					$.state_statement,
 					field('text', $.text),
@@ -51,13 +51,25 @@ module.exports = grammar({
 		//
 		is_statement: ($) =>
 			seq(
-				choice(
-					seq('it', 'is'),
-					seq('they', 'are'),
-					seq($.name, choice('is', 'are')),
+				field('subject', $.subject),
+				choice('is', 'are'),
+				field(
+					'values',
+					seq(
+						$.boolean,
+						repeat(seq(',', $.boolean)),
+					),
 				),
-				$.name,
-				repeat(seq(',', $.name)),
+			),
+		boolean: ($) =>
+			seq(
+				field('negative', optional('not')),
+				field('value', $.name),
+			),
+		subject: ($) =>
+			choice(
+				field('it', choice('it', 'they')),
+				field('name', $.name),
 			),
 		//
 		trait_statement: ($) =>
