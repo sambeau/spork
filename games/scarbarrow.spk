@@ -14,15 +14,23 @@ game scarbarrow-incident [
 		The sun is shining and the birds are singing
 	}
 
-	it is sunny, not cold
+	it is sunny, warm
 	it is not raining
-//	bells are not ringing
-//	dogs are barking, hungry, distant
-	shed is cold, damp, draughty
-	garden is buzzing
+	bells are not ringing
+	dogs are barking, hungry, distant
 	basement is not light
 
 	start in shed
+
+	object dogs (dogs) [
+		they are not barking
+		{Somewhere in the distance a dog is barking}
+	]
+
+	object bells (bells) [
+		they are ringing
+		{Somewhere in the distance a bell is ringing}
+	]
 
 	location shed [
 
@@ -170,6 +178,7 @@ game scarbarrow-incident [
 	location hall [
 		{a hallway with a tiled floor and a steep staircase}
 		object umbrella (umbrella) [
+			it is closed
 			{a black umbrella with a bone handle}
 		]
 		exits
