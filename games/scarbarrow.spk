@@ -17,7 +17,7 @@ game scarbarrow-incident [
 	it is sunny, warm
 	it is not raining
 	bells are not ringing
-	dogs are barking, hungry, distant
+	dogs are barking // somewhere!
 	basement is not light
 
 	start in shed
