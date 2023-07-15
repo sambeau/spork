@@ -8,58 +8,109 @@ The language is more programmery than the new wave of prose-based langauges and 
 
 The working subset of the language currently looks like this, though the final language is far richer…
 
-	game scarbarrow-incident [
-	
-	title {The Scarbarrow Incident 2}
-	by {Sam Phillips}
-	
-	version 0.1
-	created {{today}}
-	
-	{
-		# Welcome
-	}
-	{
-		It is a lovely day in the quaint village of Scarbarrow.
-		The sun is shining and the birds are singing
-	}
-	
-	start in shed
-	
-	location shed [
-	
-		it is dull, dusty
-		{
-			a ramshackle garden shed
-		}
-		object crowbar (crowbar)[
-			{a hefty iron crowbar}
-		]
-		object ship-in-bottle (bottle)[
-			{a clear glass bottle with a model ship inside}
-		]
-		ship-in-bottle is here
-	
-		exits
-			south to garden
-	]
-	
-	location garden [
-		{
-			a slighty overgrown kitchen garden
-		}
-		object flowers (flowers) [
-			{scented roses}
-		]
-		object garden-gnome (garden-gnome) [
-			{a brightly painted garden gnome carrying a fishing rod}
-		]
-		object watering-can (watering-can) [
-			{a rusty, green watering can}
-		]
-		exits
-			south to kitchen,
-			north to shed,
-			west to pond,
-			east to tree
-	]
+    game scarbarrow-incident [
+
+    title {The Scarbarrow Incident}
+    by {Sam Phillips}
+
+    version 0.1
+    created {{today}}
+
+    {
+    	# Welcome
+    }
+    {
+    	It is a lovely day in the quaint village of Scarbarrow.
+    	The sun is shining and the birds are singing
+    }
+
+    it is sunny, warm
+    it is not raining
+    bells are not ringing
+    dogs are barking
+    basement is not light
+
+    start in shed
+
+    object dogs (dogs) [
+    	they are not barking
+    	{Somewhere in the distance a dog is barking}
+    ]
+
+    object bells (bells) [
+    	they are ringing
+    	{Somewhere in the distance a bell is ringing}
+    ]
+
+    location shed [
+
+    	it is dull, dusty, ramshackle
+    	{
+    		a ramshackle garden shed
+    	}
+    	object crowbar (crowbar)[
+    		{a hefty iron crowbar}
+    	]
+    	object ship-in-bottle (bottle)[
+
+    		it is not broken
+
+    		{an ancient glass bottle covered in years of dust}
+    		on((drop|break|smash) it)[
+    		it is broken
+    			{It smashes into a thousand pieces to reveal
+    				a tangled mess of wood, thread and paper}
+    		]
+    		on((wipe|clean|rub|polish) it (with sleeve))[
+    			it is clean
+    			{You remove the dust to revel the contents of
+    				the bottle—an intricate model ship with sails and rigging}
+    		]
+    		on ((open|uncork) it)[
+    			{You'd need a corkscrew for that}
+    		]
+    	]
+    	ship-in-bottle is here
+
+    	exits
+    		south to garden
+    ]
+
+    location garden [
+    	{
+    		a slighty overgrown kitchen garden
+    	}
+
+    	object flowers (flowers) [
+    		they are wilted
+    		{slightly wilted roses}
+    		on((smell|sniff) it)[
+    			{they smell of flowers}
+    		]
+    		on((get|pick) it)[
+    			{ouch! They are too prickly to pick}
+    		]
+    	]
+
+    	object garden-gnome (gnome) [
+    		it is not broken
+    		{a brightly painted garden gnome carrying a fishing rod}
+    		on(talk to it)[
+    			{he stares back at you without moving}
+    		]
+    		on(break|smash|kick)[
+    			{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
+    		]
+    	]
+
+    	object watering-can (watering-can) [
+    		{a rusty, green watering can}
+    	]
+
+    	exits
+    		south to kitchen,
+    		north to shed,
+    		west to pond,
+    		east to tree
+    ]
+    :
