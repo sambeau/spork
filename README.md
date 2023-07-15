@@ -54,10 +54,12 @@ The working subset of the language currently looks like this, though the final l
     	object ship-in-bottle (bottle)[
 
     		it is not broken
+    		it is not clean
 
     		{an ancient glass bottle covered in years of dust}
+
     		on((drop|break|smash) it)[
-    		it is broken
+    			it is broken
     			{It smashes into a thousand pieces to reveal
     				a tangled mess of wood, thread and paper}
     		]
@@ -70,7 +72,6 @@ The working subset of the language currently looks like this, though the final l
     			{You'd need a corkscrew for that}
     		]
     	]
-    	ship-in-bottle is here
 
     	exits
     		south to garden
@@ -82,8 +83,11 @@ The working subset of the language currently looks like this, though the final l
     	}
 
     	object flowers (flowers) [
+
     		they are wilted
+
     		{slightly wilted roses}
+
     		on((smell|sniff) it)[
     			{they smell of flowers}
     		]
@@ -93,13 +97,17 @@ The working subset of the language currently looks like this, though the final l
     	]
 
     	object garden-gnome (gnome) [
+
     		it is not broken
+
     		{a brightly painted garden gnome carrying a fishing rod}
+
     		on(talk to it)[
     			{he stares back at you without moving}
     		]
     		on(break|smash|kick)[
-    			{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
+    			{the poor gnome shatters into pieces.
+    				That was a bit violent. Are you feeling better now?}
     		]
     	]
 
