@@ -36,6 +36,9 @@ game scarbarrow-incident [
 				{You remove the dust to revel the contents of
 					the bottle—an intricate model ship with sails and rigging}
 			]
+			on ((open|uncork) it)[
+				{You'd need a corkscrew for that}
+			]
 		]
 		ship-in-bottle is here
 
@@ -47,15 +50,31 @@ game scarbarrow-incident [
 		{
 			a slighty overgrown kitchen garden
 		}
+
 		object flowers (flowers) [
-			{scented roses}
+			{slightly wilted roses}
+			on((smell|sniff) it)[
+				{they smell of flowers}
+			]
+			on((get|pick) it)[
+				{ouch! They are too prickly to pick}
+			]
 		]
-		object garden-gnome (garden-gnome) [
+
+		object garden-gnome (gnome) [
 			{a brightly painted garden gnome carrying a fishing rod}
+			on(talk to it)[
+				{he stares back at you without moving}
+			]
+			on(break|smash|kick)[
+				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
+			]
 		]
+
 		object watering-can (watering-can) [
 			{a rusty, green watering can}
 		]
+
 		exits
 			south to kitchen,
 			north to shed,

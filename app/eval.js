@@ -231,7 +231,7 @@ const evalGame = (game) => {
 		scope,
 		game.locationNodes,
 	)
-	// console.log(JSON.stringify(scope, null, 2))
+	console.log(JSON.stringify(scope, null, 2))
 	return scope
 }
 

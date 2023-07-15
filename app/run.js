@@ -39,20 +39,30 @@ const isAreArticalPlural = (noun, n) => {
 			return 'are ' + pluralize(noun)
 	}
 }
+
+const mapLocationObjects = (game, location, mapf) => {
+	const objects = location.objects
+	const objectNames = Object.keys(objects)
+	if (objectNames.length > 0)
+		resultsArray = objectNames.map((name) =>
+			mapf(objects, name),
+		)
+	return resultsArray
+}
+
 const runLocation = (game) => {
 	const location = game.locations[game.location]
 	const exits = Object.keys(location.exits)
-
-	const objects = location.objects
-	const objectNames = Object.keys(objects)
-	let objectDescriptions = []
-	if (objectNames.length > 0)
-		objectDescriptions = objectNames.map((name) => {
+	let objectDescriptions = mapLocationObjects(
+		game,
+		location,
+		(objects, name) => {
 			const noun = objects[name].noun
 			if (pluralize.isSingular(noun))
 				return Articles.articlize(noun)
 			return noun
-		})
+		},
+	)
 	// console.log(objectDescriptions)
 
 	console.log('')
@@ -118,13 +128,50 @@ const objectsByNouns = (objects) => {
 	)
 	return objs
 }
+const forEachLocationObjects = (game, location, mapf) => {
+	const objects = location.objects
+	const objectNames = Object.keys(objects)
+	if (objectNames.length > 0)
+		resultsArray = objectNames.forEach((name) => {
+			if (mapf(objects, name)) return true
+		})
+	return false
+}
+
+const runOnCommands = (game, command) => {
+	const location = game.locations[game.location]
+	let understood = false
+	forEachLocationObjects(
+		game,
+		location,
+		(objects, name) => {
+			const object = objects[name]
+			object.onCommands.forEach((onCommand) => {
+				if (command.match(onCommand.regex)) {
+					understood = true
+					// todo: actually run the command here
+					console.log(
+						'\n' + onCommand.text + '.\n',
+					)
+				}
+			})
+		},
+	)
+
+	return understood
+}
+
 const directionsRx = /^north|south|east|west|up|down$/
 const examineRx = /^ex(amine)?\s+([a-zA-Z][a-zA-Z\-0-9]*)$/
 
 const isDirection = (d) => d.match(directionsRx) !== null
+
 const runCommand = (game, command) => {
+	// returns 'new rooom'
 	const location = game.locations[game.location]
 	command = cleanCommand(command)
+
+	if (runOnCommands(game, command)) return false
 
 	if (command === 'look') return true // enter room again
 	if (isDirection(command)) {
