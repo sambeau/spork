@@ -1,0 +1,8 @@
+{
+	"identifier": "org.sambeau",
+	"name": "Spork",
+	"organization": "sambeau.com",
+	"description": "Syntax highlighting for Spork.",
+	"version": "1.0",
+	"categories": ["languages"]
+}

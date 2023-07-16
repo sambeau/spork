@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<syntax name="spork">
+    <meta>
+        <name>Spork</name>
+        <type>script</type>
+        <preferred-file-extension>spk</preferred-file-extension>
+		<default-extension>spk</default-extension>
+    </meta>
+
+    <detectors>
+        <extension priority="1.0">spk</extension>
+    </detectors>
+
+	<indentation>
+		<increase>
+			<expression>(\{[^}\"']*$)|(\[[^\]\"']*$)|(\([^)\"']*$)</expression>
+		</increase>
+		<decrease>
+			<expression>^\s*(\s*/\*.*\*/\s*)*[\}\]\)\\]</expression>
+		</decrease>
+	</indentation>
+
+	<comments>
+		<single>
+			<expression>//</expression>
+		</single>
+		<multiline>
+			<starts-with>
+				<expression>/*</expression>
+			</starts-with>
+			<ends-with>
+				<expression>*/</expression>
+			</ends-with>
+		</multiline>
+	</comments>
+
+	<scopes spell-check="false">
+
+		<scope name="spork.comment.single" spell-check="true">
+			<expression>(\/\/)(.*)$</expression>
+			<capture number="1" name="spork.punctuation.definition.begin" />
+			<capture number="2" name="spork.comment.content" />
+		</scope>
+		<scope name="spork.comment.multiline" spell-check="true">
+			<symbol type="comment">
+				<context behavior="subtree" />
+			</symbol>
+			<starts-with>
+				<expression>\/\*</expression>
+				<capture number="0" name="spork.punctuation.definition.begin" />
+			</starts-with>
+			<ends-with>
+				<expression>\*\/</expression>
+				<capture number="0" name="spork.punctuation.definition.end" />
+			</ends-with>
+		</scope>
+
+		<scope name="spork.block" spell-check="true" >
+			<starts-with>
+				<!-- Opening bracket -->
+				<expression>(\{)</expression>
+				<capture number="1" name="spork.bracket" />
+			</starts-with>
+			<ends-with>
+				<!-- Closing bracket -->
+				<expression>(\})</expression>
+				<capture number="1" name="spork.bracket" />
+			</ends-with>
+		</scope>
+
+		<scope name="spork.keyword" spell-check="false">
+			<symbol type="keyword"/>
+			<strings>
+				<string>game</string>
+				<string>location</string>
+				<string>object</string>
+				<string>it</string>
+				<string>they</string>
+				<string>them</string>
+				<string>thing</string>
+				<string>on</string>
+				<string>in</string>
+				<string>is</string>
+				<string>are</string>
+				<string>to</string>
+				<string>exits</string>
+				<string>north</string>
+				<string>south</string>
+				<string>east</string>
+				<string>west</string>
+				<string>up</string>
+				<string>down</string>
+				<string>start</string>
+				<string>title</string>
+				<string>by</string>
+				<string>version</string>
+				<string>created</string>
+			</strings>
+		</scope>
+	</scopes>
+</syntax>
