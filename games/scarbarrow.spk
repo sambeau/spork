@@ -26,7 +26,6 @@ game scarbarrow-incident [
 	// 	dog as (dog|hound),
 	// 	cat as {a fluffy (cat|pussy|kitty|furball)}
 
-
 	object dogs (dogs) [
 		they are not barking
 		{Somewhere in the distance a (dog) is barking}
