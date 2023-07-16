@@ -26,7 +26,6 @@ game scarbarrow-incident [
 	// 	dog as (dog|hound),
 	// 	cat as {a fluffy (cat|pussy|kitty|furball)}
 
-
 	object dogs (dogs) [
 		they are not barking
 		{Somewhere in the distance a (dog) is barking}
@@ -46,7 +45,7 @@ game scarbarrow-incident [
 		object crowbar (crowbar)[
 			{a hefty iron crowbar}
 		]
-		object ship-in-bottle (bottle)[
+		object ship-bottle (bottle)[
 
 			it is not broken
 
