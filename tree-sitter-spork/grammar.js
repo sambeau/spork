@@ -24,6 +24,7 @@ module.exports = grammar({
 					$.trait_statement,
 					$.state_statement,
 					field('text', $.text),
+					field('sayAs', $.sayAs),
 					field('start', $.start_statement),
 					field('location', $.location),
 					field('object', $.object),
@@ -87,6 +88,22 @@ module.exports = grammar({
 				seq($.name, '|', $.name),
 				repeat(seq('|', $.name)),
 			),
+		//
+		sayAs: ($) => seq('say', $.name, 'as', $.sayList),
+		sayList: ($) =>
+			seq(
+				$.textChoice,
+				repeat(seq(',', $.textChoice)),
+			),
+		textChoice: ($) =>
+			seq(
+				'(',
+				$.textOrChoice,
+				repeat(seq('|', $.textOrChoice)),
+				')',
+			),
+		textOrChoice: ($) =>
+			choice($.name, $.textChoice, $.text),
 		//
 		start_statement: ($) =>
 			seq(

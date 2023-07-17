@@ -28,7 +28,9 @@ game scarbarrow-incident [
 
 	object dogs (dogs) [
 		they are not barking
-		{Somewhere in the distance a (dog) is barking}
+		say dog as (dog|hound),
+			barking as (barking|howling)
+		{Somewhere in the distance a (dog) is (barking)}
 	]
 
 	object bells (bells) [
