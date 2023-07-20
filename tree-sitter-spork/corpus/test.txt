@@ -1,116 +1,65 @@
 =====
 Test Game
 =====
-game scarbarrow [
+game scarbarrow-incident [
 
 	title {The Scarbarrow Incident}
 	by {Sam Phillips}
 
 	version 0.1
-	created {today}
+	created {{today}}
 
-	traits night|day, raining|dry
-	states hot|mild|cold, bright|dull
-
-	it is day, bright, mild
 	{
-		It is a lovely day in the quaint village of Scarbarrow. You are in a shed.
+		# Welcome
+	}
+	{
+		It is a lovely day in the quaint village of Scarbarrow.
+		The sun is shining and the birds are singing
 	}
 
-	enter shed
+	it is sunny, warm, not raining
+	basement is dark
 
-	object ship-in-bottle [
-		{
-			A dusty green bottle with something inside.
-		}
-		on smash [
-			{
-				The bottle smashes into a thousand shards and a mess of wood and tangled string scatters onto the floor.
-			}
-			bottle is gone
-			broken-glass is here
-			ship is here, smashed
-		]
-		on examine [
-			{There's a tiny, ornate, wooden boat inside.}
-		]
-	]
+	start in shed
 
 	location shed [
-		it is dull, dusty
-		{
-			a ramshackle garden shed
-		}
-		ship-in-bottle is here
-		exits
-			south to garden
-	]
 
-	location garden [
+		describe shed as (garden shed|wooden shack)
 		{
-			A slighty overgrown kitchen garden.
-		}
-		exits
-			south to kitchen,
-			north to shed,
-			west to pond,
-			east to tree
-	]
-
-	location kitchen [
-		{
-			a {if is raining then {dingy} else {jolly}} kitchen
+			a (messy|ramshackle) (shed)
 		}
 
-		exits
-			south to shed,
-			down to basement
-	]
-
-	location basement [
-		it is dark, dusty, cold
-		{
-			A dark and spooky basement.
-		}
-
-		exits
-			up to kitchen
-	]
-
-//	object category table [
-//		{ A wooden table }
-//      has size 100
-//		contains a drawer
-//		on get {
-//			it's too heavy to carry
-//		}
-//	]
-
-	container category bag [
-		it is portable
-		it has space of 12
-		it has size [
-			when empty
-				1
-			otherwise
-				13 - space
+		object crowbar (crowbar)[
+			{a (hefty|sturdy) (iron|metal) crowbar}
 		]
 
-		action(put|place|add thing in|into it)[
-			if space >= size of thing [
-				insert thing into it
-				space = space - size of thing
+		object ship-bottle (bottle) [
+
+			it is not broken
+
+			{an (old|ancient) glass bottle covered with (dust|grime)}
+
+			on((drop|break|smash) it)[
+				it is broken
+				{It smashes into a thousand pieces to reveal
+					a tangled mess of wood, thread and paper}
 			]
-			action(get|remove thing from it)[
-				remove thing from bag
-				space = space + size of thing
-				thing is held
+			on((wipe|clean|rub|polish) it (with sleeve))[
+				it is clean
+				{You remove the dust to revel the contents of
+					the bottle—an intricate model ship with sails and rigging}
 			]
-			action (look|check|describe in|inside|contents |of| it) [
-				{a large brown hessian sack}
-				for thing in it describe
-				// this will get commas automatically as it will his 'say' as a list
+			on ((open|uncork) it)[
+				if (it is open and it is not broken) [
+					{It is already open}
+				] else [
+					{You'd need (a corkscrew|an opener) for that}
+				]
 			]
+		]
+
+		exits
+			south to garden
 	]
 ]
 ---

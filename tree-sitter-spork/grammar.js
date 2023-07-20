@@ -205,21 +205,18 @@ module.exports = grammar({
 			),
 		//
 		on_statement: ($) =>
+			seq('on', field('command', $.command), $.block),
+		block: ($) =>
 			seq(
-				'on',
-				field('command', $.command),
 				'[',
-				$._on_statements,
-				']',
-			),
-		_on_statements: ($) =>
-			repeat1(
-				choice(
-					$.is_statement,
-					$.trait_statement,
-					$.state_statement,
-					field('text', $.text),
+				repeat(
+					choice(
+						$.is_statement,
+						$.if_statement,
+						field('text', $.text),
+					),
 				),
+				']',
 			),
 		command: ($) =>
 			seq('(', field('words', $.command_words), ')'),
@@ -247,6 +244,32 @@ module.exports = grammar({
 					),
 				),
 				')',
+			),
+		//
+		if_statement: ($) =>
+			seq(
+				'if',
+				'(',
+				$.conditional,
+				')',
+				$.block,
+				optional(seq('else', $.block)),
+			),
+		conditional: ($) =>
+			choice(
+				prec.left(
+					2,
+					seq(
+						$.conditional,
+						'and',
+						$.conditional,
+					),
+				),
+				prec.left(
+					2,
+					seq($.conditional, 'or', $.conditional),
+				),
+				prec.left(1, $.is_statement),
 			),
 		//
 		lookUp: ($) =>
