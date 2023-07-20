@@ -28,7 +28,7 @@ const main = () => {
 	const game = evalGame(parseTree)
 
 	// console.log(
-	// 	JSON.stringify(game.entities['dogs'], null, 2),
+	// 	JSON.stringify(game.entities['shed'], null, 2),
 	// )
 	runGame(game)
 }

@@ -28,9 +28,9 @@ game scarbarrow-incident [
 	object dogs (dogs) [
 		they are not barking
 		describe
-			dog as (dog|hound),
+			dogs as (dogs|hounds),
 			barking as (barking|howling)
-		{Somewhere in the distance a (dog) is (barking)}
+		{Somewhere in the distance (dogs) are (barking)}
 	]
 
 	object bells (bells) [
@@ -41,21 +41,18 @@ game scarbarrow-incident [
 	location shed [
 
 		it is dull, dusty, ramshackle
-
-		describe
-			shed as (shed|shack)
-
+		describe shed as (garden shed|wooden shack)
 		{
-			a ramshackle garden shed
+			a (messy|ramshackle) (shed)
 		}
 		object crowbar (crowbar)[
-			{a hefty iron crowbar}
+			{a (hefty|sturdy) (iron|metal) crowbar}
 		]
 		object ship-bottle (bottle)[
 
 			it is not broken
 
-			{an ancient glass bottle covered in years of dust}
+			{an (old|ancient) glass bottle covered with (dust|grime)}
 
 			on((drop|break|smash) it)[
 				it is broken
@@ -68,7 +65,7 @@ game scarbarrow-incident [
 					the bottle—an intricate model ship with sails and rigging}
 			]
 			on ((open|uncork) it)[
-				{You'd need a corkscrew for that}
+				{You'd need (a corkscrew|an opener) for that}
 				// (25% chance of) [ // (1/3 of, 0.5 of)
 				// 	drop it!
 				// ]
@@ -85,7 +82,7 @@ game scarbarrow-incident [
 
 	location garden [
 		{
-			a slightly overgrown kitchen garden
+			a (slightly|somewhat|rather) overgrown kitchen garden
 		}
 
 		object flowers (flowers) [

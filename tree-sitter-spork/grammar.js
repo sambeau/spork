@@ -122,7 +122,7 @@ module.exports = grammar({
 				')',
 			),
 		textOrChoice: ($) =>
-			choice($.name, $.textChoice, $.text),
+			choice(repeat1($.name), $.textChoice, $.text),
 		//
 		start_statement: ($) =>
 			seq(
@@ -249,15 +249,24 @@ module.exports = grammar({
 				')',
 			),
 		//
+		lookUp: ($) =>
+			prec(2, seq('(', field('name', $.name), ')')), // higher precedence
 		text: ($) =>
 			seq(
 				$._start_text,
-				repeat(choice($.words, $.newline, $.code)),
+				repeat(
+					choice(
+						$.lookUp,
+						$.textChoice,
+						$.newline,
+						$.words,
+					),
+				),
 				$._end_text,
 			),
 		_start_text: () => '{',
 		_end_text: () => '}',
-		words: () => field('words', /[^\s{}]+/),
+		words: () => field('words', /[^\s{}()]+/),
 		code: ($) =>
 			field(
 				'code',

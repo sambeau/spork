@@ -3,6 +3,8 @@ const readline = require('node:readline')
 const pluralize = require('pluralize')
 const Articles = require('articles')
 
+const { say } = require('./say.js')
+
 const list_formatter = new Intl.ListFormat('en', {
 	style: 'long',
 	type: 'conjunction',
@@ -50,6 +52,34 @@ const mapLocationObjects = (game, location, mapf) => {
 	return resultsArray
 }
 
+const runTexts = (scope, texts) => {
+	// console.log(scope)
+	if (Array.isArray(texts)) {
+		let out = ''
+		for (i = 0; i < texts.length; i++) {
+			if (
+				i > 0 &&
+				texts[i].type !== 'paragraph' &&
+				texts[i - 1].type !== 'paragraph'
+			)
+				out += ' '
+			out += runTexts(scope, texts[i])
+		}
+		return out
+	}
+	switch (texts.type) {
+		case 'string':
+			return texts.string
+		case 'lookup':
+			return say(scope.describe, texts)
+		case 'choose':
+			return say(scope.describe, texts)
+		case 'paragraph':
+			return '\n\n'
+	}
+	return '(*' + texts.type + '*)'
+}
+
 const runLocation = (game) => {
 	const location = game.locations[game.location]
 	const exits = Object.keys(location.exits)
@@ -66,8 +96,11 @@ const runLocation = (game) => {
 	// console.log(objectDescriptions)
 
 	console.log('')
-	console.log('You are in', location.texts + '.')
-	if (objectDescriptions.length > 0) {
+	console.log(
+		'You are in',
+		runTexts(location, location.texts) + '.',
+	)
+	if (objectDescriptions?.length > 0) {
 		objectDescriptions[0] = isAreNoun(
 			objectDescriptions[0],
 		)
@@ -90,9 +123,9 @@ const runUpdate = (game) => {
 }
 
 const runSetup = (game) => {
-	console.log('\n' + game.title)
-	console.log('\nBy', game.author)
-	console.log('\n' + game.text)
+	console.log('\n' + runTexts(game, game.title))
+	console.log('\nBy', runTexts(game, game.author))
+	console.log('\n' + runTexts(game, game.text))
 
 	game.location = game.start
 
@@ -151,7 +184,12 @@ const runOnCommands = (game, command) => {
 					understood = true
 					// todo: actually run the command here
 					console.log(
-						'\n' + onCommand.text + '.\n',
+						'\n' +
+							runTexts(
+								object,
+								onCommand.text,
+							) +
+							'.\n',
 					)
 				}
 			})
@@ -201,7 +239,9 @@ const runCommand = (game, command) => {
 			)
 			return false
 		}
-		console.log('\n' + object.texts + '.\n')
+		console.log(
+			'\n' + runTexts(object, object.texts) + '.\n',
+		)
 		return false
 	}
 	console.log("\nSorry, I didn't understand that.\n")

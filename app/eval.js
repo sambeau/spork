@@ -81,7 +81,7 @@ const evalLocation = (scope, loc) => {
 	location.states = loc.stateNodes
 	location.texts = evalTexts(scope, loc.textNodes)
 	location.traits = loc.traitNode
-	location.descriptions = evalDescriptions(
+	location.describe = evalDescribe(
 		scope,
 		loc.describeNodes,
 	)
@@ -132,8 +132,8 @@ const evalTextChoice = (scope, textChoice) => {
 	return choice
 }
 
-const evalDescriptions = (scope, describeNodes) => {
-	descriptions = {}
+const evalDescribe = (scope, describeNodes) => {
+	let descriptions = {}
 	if (!describeNodes || describeNodes?.length === 0)
 		return
 	describeNodes.forEach((describeNode) => {
@@ -149,7 +149,7 @@ const evalDescriptions = (scope, describeNodes) => {
 			},
 		)
 	})
-	console.log(JSON.stringify(descriptions, null, 2))
+	// console.log(JSON.stringify(descriptions, null, 2))
 
 	return descriptions
 }
@@ -169,8 +169,8 @@ const evalExit = (scope, exits) => {
 }
 
 const evalObject = (scope, obj) => {
-	if (obj.describeNodes.length > 0)
-		console.log(obj.fields)
+	// if (obj.describeNodes.length > 0)
+	// 	console.log(obj.fields)
 
 	const name = obj.nameNode.text
 	const object = {
@@ -179,10 +179,7 @@ const evalObject = (scope, obj) => {
 		noun: obj.nounNode.text,
 	}
 
-	object.descriptions = evalDescriptions(
-		scope,
-		obj.describeNodes,
-	)
+	object.describe = evalDescribe(scope, obj.describeNodes)
 
 	object.facts = {}
 	let extraFacts = evalFacts(
@@ -304,19 +301,45 @@ const evalStart = (scope, game) => {
 }
 
 const evalText = (scope, textNode) => {
-	return textNode.children
-		.map((w) => {
-			if (w.type === 'code')
-				return evalCode(scope, w.codeNodes)
-			else return w.text
-		})
-		.join(' ')
+	return textNode.children.map((w) => {
+		// console.log('describe:', w.type)
+		if (w.type === 'code')
+			return {
+				type: 'code',
+				code: evalCode(scope, w.codeNodes),
+			}
+		if (w.type === 'lookUp') {
+			// console.log('lookUp:', w)
+			// console.log('lookUp:', w.fields)
+			return { type: 'lookup', id: w.nameNode.text }
+		}
+		if (w.type === 'textChoice') {
+			// console.log('!!textChoice:', w)
+			// console.log(
+			// 	'!!textChoice:',
+			// 	w.textOrChoiceNodes,
+			// )
+			// console.log(evalTextChoice(scope, w))
+			return evalTextChoice(scope, w)
+		} else
+			return {
+				type: 'string',
+				string: w.text,
+			}
+	})
 }
 
 const evalTexts = (scope, textNodes) => {
-	return textNodes
-		.map((n) => evalText(scope, n))
-		.join('\n\n')
+	let texts = []
+	let first = true
+	textNodes.forEach((n) => {
+		if (!first) {
+			texts.push({ type: 'paragraph' })
+		}
+		first = false
+		texts.push(evalText(scope, n))
+	})
+	return texts.flat()
 }
 
 const evalCode = (scope, code) => {
@@ -360,10 +383,7 @@ const evalGame = (game) => {
 	scope.objects = evalObjects(scope, game.objectNodes)
 	scope.text = evalTexts(scope, game.textNodes)
 	scope.start = evalStart(scope, game)
-	scope.descriptions = evalDescriptions(
-		scope,
-		game.describeNodes,
-	)
+	scope.describe = evalDescribe(scope, game.describeNodes)
 	//
 	// do locations last
 	//
