@@ -18,62 +18,54 @@ The working subset of the language currently looks like this, though the final l
 
     	{
     		# Welcome
-
+    	}
+    	{
     		It is a lovely day in the quaint village of Scarbarrow.
     		The sun is shining and the birds are singing
     	}
 
-    	it is sunny, warm
-    	it is not raining
-    	bells are not ringing
-    	dogs are barking
-    	basement is not light
+    	it is sunny, warm, not raining
+    	basement is dark
 
     	start in shed
 
     	object dogs (dogs) [
     		they are not barking
-    		{Somewhere in the distance a dog is barking}
-    	]
-
-    	object bells (bells) [
-    		they are ringing
-    		{Somewhere in the distance a bell is ringing}
+    		describe
+    			dogs as (dogs|hounds),
+    			barking as (barking|howling|whining)
+    		{Somewhere in the distance (dogs) are (barking)}
     	]
 
     	location shed [
 
-    		it is dull, dusty, ramshackle
+    		describe shed as (garden shed|wooden shack)
     		{
-    			a ramshackle garden shed
+    			a (messy|ramshackle) (shed)
     		}
+
     		object crowbar (crowbar)[
-    			{a hefty iron crowbar}
+    			{a (hefty|sturdy) (iron|metal) crowbar}
     		]
-    		object ship-in-bottle (bottle)[
+
+    		object ship-bottle (bottle)[
 
     			it is not broken
-    			it is not clean
 
-    			{ an ancient glass bottle covered in years of dust }
+    			{an (old|ancient) glass bottle covered with (dust|grime)}
 
     			on((drop|break|smash) it)[
     				it is broken
-    				{
-    					It smashes into a thousand pieces to reveal
-    					a tangled mess of wood, thread and paper
-    				}
+    				{It smashes into a thousand pieces to reveal
+    					a tangled mess of wood, thread and paper}
     			]
     			on((wipe|clean|rub|polish) it (with sleeve))[
     				it is clean
-    				{
-    					You remove the dust to reveal the contents
-    					of the bottle—an intricate model ship with
-    					sails and rigging
-    				}
+    				{You remove the dust to revel the contents of
+    					the bottle—an intricate model ship with sails and rigging}
     			]
     			on ((open|uncork) it)[
-    				{ You'd need a corkscrew for that }
+    				{You'd need (a corkscrew|an opener) for that}
     			]
     		]
 
@@ -83,46 +75,28 @@ The working subset of the language currently looks like this, though the final l
 
     	location garden [
     		{
-    			a slighty overgrown kitchen garden
+    			a (slightly|somewhat|rather) overgrown kitchen garden
     		}
 
     		object flowers (flowers) [
-
     			they are wilted
-
     			{slightly wilted roses}
-
     			on((smell|sniff) it)[
-    				{
-    					they smell of flowers
-    				}
+    				{they smell of flowers}
     			]
     			on((get|pick) it)[
-    				{
-    					ouch! They are too prickly to pick
-    				}
+    				{ouch! They are too prickly to pick}
     			]
     		]
 
     		object garden-gnome (gnome) [
-
     			it is not broken
-
-    			{
-    				a brightly painted garden gnome
-    				carrying a fishing rod
-    			}
-
+    			{a brightly painted garden gnome carrying a fishing rod}
     			on(talk to it)[
-    				{
-    					he stares back at you without moving
-    				}
+    				{he stares back at you without moving}
     			]
     			on(break|smash|kick)[
-    				{
-    					the poor gnome shatters into pieces.
-    					That was a bit violent. Are you feeling
-    					better now?}
+    				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
     			]
     		]
 
