@@ -1,4 +1,4 @@
-let descriptions = {
+let _descriptions = {
 	dog: {
 		type: 'choose',
 		from: [
@@ -56,7 +56,7 @@ let descriptions = {
 	},
 }
 
-const lookUp = (w) => {
+const lookUp = (descriptions, w) => {
 	return descriptions[w]
 }
 
@@ -66,7 +66,7 @@ const chooseFrom = (array) => {
 
 	return r
 }
-const describeOne = (lookingUp, d) => {
+const describeOne = (descriptions, lookingUp, d) => {
 	console.log('>>>', d)
 	if (typeof d === 'string') {
 		console.log('string:', d)
@@ -85,12 +85,20 @@ const describeOne = (lookingUp, d) => {
 				console.log('lookingUp === d.id', d.id)
 				return d.id
 			}
-			const found = lookUp(d.id)
+			const found = lookUp(descriptions, d.id)
 			if (!found) return d.id
 			if (lookingUp === null) lookingUp = d.id
 			if (Array.isArray(found))
-				return describe(lookingUp, found)
-			return describeOne(lookingUp, found)
+				return describe(
+					descriptions,
+					lookingUp,
+					found,
+				)
+			return describeOne(
+				descriptions,
+				lookingUp,
+				found,
+			)
 		case 'choose':
 			console.log('choose:', d)
 			const chosen = chooseFrom(d.from)
@@ -100,19 +108,29 @@ const describeOne = (lookingUp, d) => {
 				return chosen
 			}
 			if (Array.isArray(chosen))
-				return describe(lookingUp, chosen)
+				return describe(
+					descriptions,
+					lookingUp,
+					chosen,
+				)
 
-			return describeOne(lookingUp, chosen)
+			return describeOne(
+				descriptions,
+				lookingUp,
+				chosen,
+			)
 	}
 }
-const describe = (lookingUp, ds) => {
+const describe = (descriptions, lookingUp, ds) => {
 	if (typeof ds === 'string') {
 		return ds
 	}
 	if (Array.isArray(ds))
-		return ds.map((d) => describeOne(lookingUp, d))
+		return ds.map((d) =>
+			describeOne(descriptions, lookingUp, d),
+		)
 
-	// return describeOne(ds)
+	// return describeOne(descriptions,ds)
 }
 const joinWithDashes = (ws) => {
 	ws = ws.flat()
@@ -129,7 +147,7 @@ function main() {
 	console.log(
 		'said:',
 		joinWithDashes(
-			describe(null, [
+			describe(_descriptions, null, [
 				'the',
 				{ type: 'lookup', id: 'big' },
 				{ type: 'lookup', id: 'black-haired' },
