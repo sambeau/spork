@@ -22,13 +22,13 @@ game scarbarrow-incident [
 
 	start in shed
 
-	// describe
-	// 	dog as (dog|hound),
-	// 	cat as {a fluffy (cat|pussy|kitty|furball)}
+	describe
+		cat as (cat|pussy|kitty|kitty-cat|furball)
 
 	object dogs (dogs) [
 		they are not barking
-		say dog as (dog|hound),
+		describe
+			dog as (dog|hound),
 			barking as (barking|howling)
 		{Somewhere in the distance a (dog) is (barking)}
 	]
@@ -41,6 +41,10 @@ game scarbarrow-incident [
 	location shed [
 
 		it is dull, dusty, ramshackle
+
+		describe
+			shed as (shed|shack)
+
 		{
 			a ramshackle garden shed
 		}

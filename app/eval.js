@@ -64,7 +64,6 @@ const upDateEntitiesFacts = (scope, extraFacts) => {
 }
 
 const evalLocation = (scope, loc) => {
-	// console.log(loc.fields)
 	const name = loc.nameNode.text
 	const location = {
 		name: name,
@@ -82,7 +81,10 @@ const evalLocation = (scope, loc) => {
 	location.states = loc.stateNodes
 	location.texts = evalTexts(scope, loc.textNodes)
 	location.traits = loc.traitNode
-
+	location.descriptions = evalDescriptions(
+		scope,
+		loc.describeNodes,
+	)
 	// register with game
 	scope.entities[name] = location
 
@@ -105,6 +107,53 @@ const evalExits = (scope, exits) => {
 	return evalExit(scope, exits[exits.length - 1])
 }
 
+const evalTextOrChoices = (scope, value) => {
+	switch (value.children[0].type) {
+		case 'name':
+			// return {
+			// 	type: 'lookup',
+			// 	id: value.text,
+			// }
+			return value.text
+		case 'choice':
+			return evalTextChoice(scope, value)
+		case 'text':
+			return evalText(scope, value)
+	}
+}
+const evalTextChoice = (scope, textChoice) => {
+	const choicenodes = textChoice.textOrChoiceNodes
+	const choice = {
+		type: 'choose',
+		from: choicenodes.map((textChoice) => {
+			return evalTextOrChoices(scope, textChoice)
+		}),
+	}
+	return choice
+}
+
+const evalDescriptions = (scope, describeNodes) => {
+	descriptions = {}
+	if (!describeNodes || describeNodes?.length === 0)
+		return
+	describeNodes.forEach((describeNode) => {
+		describeNode.descriptionsNodes.forEach(
+			(description) => {
+				if (description.type == 'description')
+					descriptions[
+						description.nameNode.text
+					] = evalTextChoice(
+						scope,
+						description.textChoiceNode,
+					)
+			},
+		)
+	})
+	console.log(JSON.stringify(descriptions, null, 2))
+
+	return descriptions
+}
+
 const evalExit = (scope, exits) => {
 	const exit_defs = {}
 	exits.children.forEach((exit) => {
@@ -120,13 +169,21 @@ const evalExit = (scope, exits) => {
 }
 
 const evalObject = (scope, obj) => {
-	// console.log(obj.onNodes)
+	if (obj.describeNodes.length > 0)
+		console.log(obj.fields)
+
 	const name = obj.nameNode.text
 	const object = {
 		// defs: loc.isNodes,
 		name: name,
 		noun: obj.nounNode.text,
 	}
+
+	object.descriptions = evalDescriptions(
+		scope,
+		obj.describeNodes,
+	)
+
 	object.facts = {}
 	let extraFacts = evalFacts(
 		scope,
@@ -303,7 +360,10 @@ const evalGame = (game) => {
 	scope.objects = evalObjects(scope, game.objectNodes)
 	scope.text = evalTexts(scope, game.textNodes)
 	scope.start = evalStart(scope, game)
-
+	scope.descriptions = evalDescriptions(
+		scope,
+		game.describeNodes,
+	)
 	//
 	// do locations last
 	//

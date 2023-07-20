@@ -24,7 +24,7 @@ module.exports = grammar({
 					$.trait_statement,
 					$.state_statement,
 					field('text', $.text),
-					field('sayAs', $.sayAs),
+					field('describe', $.describe),
 					field('start', $.start_statement),
 					field('location', $.location),
 					field('object', $.object),
@@ -89,17 +89,36 @@ module.exports = grammar({
 				repeat(seq('|', $.name)),
 			),
 		//
-		sayAs: ($) => seq('say', $.name, 'as', $.sayList),
-		sayList: ($) =>
+		describe: ($) =>
 			seq(
-				$.textChoice,
-				repeat(seq(',', $.textChoice)),
+				'describe',
+				field(
+					'descriptions',
+					seq(
+						$.description,
+						repeat(seq(',', $.description)),
+					),
+				),
+			),
+		description: ($) =>
+			seq(
+				field('name', $.name),
+				'as',
+				field('textChoice', $.textChoice),
 			),
 		textChoice: ($) =>
 			seq(
 				'(',
-				$.textOrChoice,
-				repeat(seq('|', $.textOrChoice)),
+				field('textOrChoice', $.textOrChoice),
+				repeat(
+					seq(
+						'|',
+						field(
+							'textOrChoice',
+							$.textOrChoice,
+						),
+					),
+				),
 				')',
 			),
 		textOrChoice: ($) =>
@@ -124,6 +143,7 @@ module.exports = grammar({
 			repeat1(
 				choice(
 					field('is', $.is_statement),
+					field('describe', $.describe),
 					field('trait', $.trait_statement),
 					field('state', $.state_statement),
 					field('text', $.text),
@@ -175,6 +195,7 @@ module.exports = grammar({
 			repeat1(
 				choice(
 					field('is', $.is_statement),
+					field('describe', $.describe),
 					field('trait', $.trait_statement),
 					field('state', $.state_statement),
 					field('text', $.text),
@@ -242,7 +263,7 @@ module.exports = grammar({
 				'code',
 				seq(
 					$._start_text,
-					choice($.name, $.int, $.float, $.text),
+					choice($.name), // for now just interpolate variables
 					$._end_text,
 				),
 			),
