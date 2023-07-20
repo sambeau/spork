@@ -14,40 +14,31 @@ game scarbarrow-incident [
 		The sun is shining and the birds are singing
 	}
 
-	it is sunny, warm
-	it is not raining
-	bells are not ringing
-	dogs are barking // somewhere!
-	basement is not light
+	it is sunny, warm, not raining
+	basement is dark
 
 	start in shed
 
-	describe
-		cat as (cat|pussy|kitty|kitty-cat|furball)
 
 	object dogs (dogs) [
 		they are not barking
 		describe
 			dogs as (dogs|hounds),
-			barking as (barking|howling)
+			barking as (barking|howling|whining)
 		{Somewhere in the distance (dogs) are (barking)}
-	]
-
-	object bells (bells) [
-		they are ringing
-		{Somewhere in the distance a bell is ringing}
 	]
 
 	location shed [
 
-		it is dull, dusty, ramshackle
 		describe shed as (garden shed|wooden shack)
 		{
 			a (messy|ramshackle) (shed)
 		}
+
 		object crowbar (crowbar)[
 			{a (hefty|sturdy) (iron|metal) crowbar}
 		]
+
 		object ship-bottle (bottle)[
 
 			it is not broken
