@@ -46,7 +46,6 @@ const upDateEntitiesFacts = (scope, extraFacts) => {
 }
 
 const evalLocation = (scope, loc) => {
-
 	const name = loc.nameNode?.text
 
 	if (name === '') {
@@ -66,7 +65,7 @@ const evalLocation = (scope, loc) => {
 		location.facts,
 		loc.isNodes,
 	)
-
+	// console.log(loc.exitsNodes)
 	location.exits = evalExits(scope, loc.exitsNodes)
 	location.objects = evalObjects(scope, loc.objectNodes)
 	location.states = loc.stateNodes
@@ -81,6 +80,7 @@ const evalLocation = (scope, loc) => {
 
 	// update extra facts
 	upDateEntitiesFacts(scope, extraFacts)
+
 	return location
 }
 
@@ -91,15 +91,39 @@ const evalLocations = (scope, locs) => {
 		const location = evalLocation(scope, loc)
 
 		if (location.name && location.name in locations)
-			errors.push(gameError(`location '${location.name}' already exists`, loc))
+			errors.push(
+				gameError(
+					`location '${location.name}' already exists`,
+					loc,
+				),
+			)
 
 		locations[location.name] = location
 	})
 	return locations
 }
 
+const evalExit = (scope, exits) => {
+	const exit_defs = {}
+	// console.log(exits)
+	// console.log(exits.noneNode)
+	if (exits?.noneNode !== null) return 'none'
+
+	exits?.children?.forEach((exit) => {
+		if (exit.type === 'exit_def') {
+			exit_defs[exit.directionNode.text] = {
+				direction: exit.directionNode.text,
+				to: exit.locationNode.text,
+			}
+		}
+	})
+	// console.log(exit_defs)
+
+	return exit_defs
+}
+
 const evalExits = (scope, exits) => {
-	return evalExit(scope, exits[exits.length - 1])
+	return evalExit(scope, exits[exits.length - 1]) // only last exits statement counts
 }
 
 const evalTextOrChoices = (scope, value) => {
@@ -128,7 +152,6 @@ const evalTextChoice = (scope, textChoice) => {
 }
 
 const evalDescribe = (scope, describeNodes) => {
-
 	let descriptions = {}
 	if (!describeNodes || describeNodes?.length === 0)
 		return
@@ -148,25 +171,6 @@ const evalDescribe = (scope, describeNodes) => {
 	// console.log(JSON.stringify(descriptions, null, 2))
 
 	return descriptions
-}
-
-const evalExit = (scope, exits) => {
-	const exit_defs = {}
-
-	if (exits?.noneNode)
-		return 'none'
-
-	exits?.children?.forEach((exit) => {
-		if (exit.type === 'exit_def') {
-			exit_defs[exit.directionNode.text] = {
-				direction: exit.directionNode.text,
-				to: exit.locationNode.text,
-			}
-		}
-	})
-	// console.log(exit_defs)
-
-	return exit_defs
 }
 
 const evalObject = (scope, obj) => {
@@ -219,17 +223,82 @@ const evalObjects = (scope, objs) => {
 		const object = evalObject(scope, obj)
 
 		if (object.name && object.name in objects)
-			errors.push(gameError(`object '${object.name}' already exists`, obj))
+			errors.push(
+				gameError(
+					`object '${object.name}' already exists`,
+					obj,
+				),
+			)
 
 		objects[object.name] = object
 	})
 	return objects
 }
 
+// const evalIf = (scope, ifStatement) => {
+//
+// }
+const evalBlockStatement = (scope, statement) => {
+	// console.log('statement:', statement)
+	switch (statement.type) {
+		case 'text':
+			return {
+				type: 'text',
+				text: evalText(scope, statement),
+			}
+		case 'if_statement':
+			const condition = []
+
+			const ifBlock = evalBlock(
+				scope,
+				statement.ifBlockNode,
+			)
+
+			const elseBlock = null
+			if (statement.elseBlockNode)
+				evalBlock(scope, statement.elseBlockNode)
+
+			return {
+				type: 'if',
+				condition: [],
+				if: ifBlock,
+				else: elseBlock,
+			}
+		case 'is_statement':
+			// console.log(statement.subjectNode.fields) //[ 'itNode', 'nameNode' ]
+			// console.log(statement.valuesNodes)
+			// console.log(statement)
+			let localUpdates = {}
+			let namedUpdates = evalFacts(
+				scope,
+				localUpdates,
+				[statement],
+			)
+			return {
+				type: 'updates',
+				localUpdates: localUpdates,
+				namedUpdates: namedUpdates,
+			}
+
+		default:
+			console.log('no rule for:', statement.type)
+	}
+	return []
+}
+const evalBlock = (scope, block) => {
+	// console.log('block:', block)
+	return block.blockStatementsNodes.map((s) =>
+		evalBlockStatement(scope, s),
+	)
+}
+
 const evalOnCommands = (scope, objectNouns, onCommands) => {
 	let comsLists = []
 	onCommands.forEach((onCom) => {
-		const text = evalTexts(scope, onCom.textNodes)
+		// console.log(onCom.fields)
+		const block = evalBlock(scope, onCom.blockNode)
+		// console.log('block', block)
+
 		let wordList = []
 		onCom.commandNode.wordsNode.children.forEach(
 			(word) => {
@@ -267,7 +336,7 @@ const evalOnCommands = (scope, objectNouns, onCommands) => {
 		)
 		comsLists.push({
 			regex: commandToRegex([objectNouns], wordList), // todo: upgrade to real nounlist
-			text: text,
+			block: block,
 		})
 	})
 	// console.log(comsLists)
@@ -304,7 +373,8 @@ const evalFacts = (scope, current, facts) => {
 }
 
 const evalStart = (scope, game) => {
-	return game.startNodes[game.startNodes.length - 1]?.locationNode?.text
+	return game.startNodes[game.startNodes.length - 1]
+		?.locationNode?.text
 }
 
 const evalText = (scope, textNode) => {

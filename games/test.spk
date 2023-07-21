@@ -1,6 +1,3 @@
-=====
-Test Game
-=====
 gametest-game [
 	title {The Scarbarrow Incident}
 	by {Sam Phillips}
@@ -8,26 +5,33 @@ gametest-game [
 	version 0.1
 	created {today}
 
+	start kitchen
+	object gardener (gardener) [
+		it is not angry
+	]
 	location kitchen [
 		{hello (pal|chum)}
+
 
 		object garden-gnome (gnome) [
 			it is not broken
 			{a brightly painted garden gnome carrying a fishing rod}
 			on(talk to it)[
-			if (it is broken)[
-				{why are you talking to a pile of rubble?}
-				]else[
+				if (it is broken)[
+					{why are you talking to a pile of rubble?}
+				] else [
 					{he stares back at you without moving}
 				]
 			]
-			on((break|smash|kick) it)[
-				{the poor gnome shatters into pieces.
-				That was a bit violent.
+			on((break|smash|kick|kill) it)[
+				it is broken
+				gardener is angry
+				{the poor gnome shatters into pieces.}
+				{That was a bit violent.
 				Are you feeling better now?}
 			]
 		]
-
+		exits
+			north to kitchen
 	]
 ]
----

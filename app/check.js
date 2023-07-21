@@ -1,10 +1,10 @@
 // check.js
 
-const {
-	syntaxError,
-	gameError,
-	linePos,
-} = require('./error.js')
+//
+// todo: check facts/is names
+//
+
+const { syntaxError, gameError } = require('./error.js')
 
 const isObjectEmpty = (objectName) => {
 	return (

@@ -52,6 +52,14 @@ const mapLocationObjects = (game, location, mapf) => {
 	return resultsArray
 }
 
+const isObjectEmpty = (objectName) => {
+	return (
+		objectName &&
+		Object.keys(objectName).length === 0 &&
+		objectName.constructor === Object
+	)
+}
+
 const runTexts = (scope, texts) => {
 	// console.log(scope)
 	if (Array.isArray(texts)) {
@@ -82,7 +90,6 @@ const runTexts = (scope, texts) => {
 
 const runLocation = (game) => {
 	const location = game.locations[game.location]
-	const exits = Object.keys(location.exits)
 	let objectDescriptions = mapLocationObjects(
 		game,
 		location,
@@ -110,12 +117,15 @@ const runLocation = (game) => {
 			'here.',
 		)
 	}
-	if (exits !== 'none')
+
+	if (location.exits && location.exits !== 'none') {
+		const exits = Object.keys(location.exits)
 		console.log(
 			'There',
 			isAreArticalPlural('exit', exits.length),
 			list_formatter.format(exits) + '.',
 		)
+	}
 	console.log('')
 }
 
@@ -171,6 +181,47 @@ const forEachLocationObjects = (game, location, mapf) => {
 		})
 	return false
 }
+const runUpdates = (game, object, updates) => {
+	local = updates?.localUpdates
+	if (!isObjectEmpty(local))
+		Object.keys(local).forEach((k) => {
+			const value = local[k]
+			object.facts[k] = value
+		})
+
+	named = updates?.namedUpdates
+	if (!isObjectEmpty(named)) {
+		Object.keys(named).forEach((entity) => {
+			if (!isObjectEmpty(named[entity]))
+				Object.keys(named[entity]).forEach((k) => {
+					const value = named[entity][k]
+					if (!(entity in game.entities)) {
+						console.log(
+							`WARN: can't make ${entity} ${k}=${value} as there is no ${entity} entity`,
+						)
+					} else
+						game.entities[entity].facts[k] =
+							value
+				})
+		})
+	}
+}
+
+const runBlock = (game, object, command) => {
+	let outTexts = []
+	command.block.forEach((s) => {
+		switch (s.type) {
+			case 'updates':
+				runUpdates(game, object, s)
+				break
+			case 'text':
+				outTexts.push(runTexts(game, s.text))
+				break
+		}
+	})
+	// console.log(game)
+	return outTexts.join(' ')
+}
 
 const runOnCommands = (game, command) => {
 	const location = game.locations[game.location]
@@ -184,14 +235,12 @@ const runOnCommands = (game, command) => {
 				if (command.match(onCommand.regex)) {
 					understood = true
 					// todo: actually run the command here
-					console.log(
-						'\n' +
-						runTexts(
-							object,
-							onCommand.text,
-						) +
-						'.\n',
+					const texts = runBlock(
+						game,
+						object,
+						onCommand,
 					)
+					console.log('\n' + texts + '\n')
 				}
 			})
 		},
@@ -266,6 +315,18 @@ const runGame = (game) => {
 			case 'help':
 				console.log('Help here…')
 				break
+			case '!facts':
+				console.log(`game:`, game.facts)
+				Object.keys(game.entities).forEach((k) => {
+					console.log(
+						`${k}:`,
+						game.entities[k].facts,
+					)
+				})
+				break
+			case '!here':
+				console.log(game.locations[game.location])
+
 			case 'quit!':
 				console.log('Bye!')
 				process.exit(0)

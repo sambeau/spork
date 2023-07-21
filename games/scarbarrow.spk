@@ -26,7 +26,9 @@ game scarbarrow-incident [
 			barking as (barking|howling|whining)
 		{Somewhere in the distance (dogs) are (barking)}
 	]
-
+	object gardener(gardener) [
+		it is not angry
+	]
 	location shed [
 
 		describe shed as (garden shed|wooden shack)
@@ -92,7 +94,9 @@ game scarbarrow-incident [
 			on(talk to it)[
 				{he stares back at you without moving}
 			]
-			on((break|smash|kick) it)[
+			on((break|smash|kick|kill) it)[
+				it is broken
+				gardener is angry
 				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
 			]
 		]

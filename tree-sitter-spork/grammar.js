@@ -62,6 +62,12 @@ module.exports = grammar({
 					),
 				),
 			),
+		// is_single_statement: ($) =>
+		// 	seq(
+		// 		field('subject', $.subject),
+		// 		choice('is', 'are'),
+		// 		field('value', $.boolean),
+		// 	),
 		boolean: ($) =>
 			seq(
 				field('negative', optional('not')),
@@ -155,13 +161,15 @@ module.exports = grammar({
 		//
 		exits_statement: ($) =>
 			seq(
-				'exits', choice(
+				'exits',
+				choice(
 					field('none', 'none'),
 
 					seq(
 						$.exit_def,
 						repeat(seq(',', $.exit_def)),
-					)),
+					),
+				),
 			),
 		exit_def: ($) =>
 			seq(
@@ -208,18 +216,27 @@ module.exports = grammar({
 			),
 		//
 		on_statement: ($) =>
-			seq('on', field('command', $.command), $.block),
+			seq(
+				'on',
+				field('command', $.command),
+				field('block', $.block),
+			),
 		block: ($) =>
 			seq(
 				'[',
-				repeat(
-					choice(
-						$.is_statement,
-						$.if_statement,
-						field('text', $.text),
-					),
+				field(
+					'block_statements',
+					$._block_statements,
 				),
 				']',
+			),
+		_block_statements: ($) =>
+			repeat1(
+				choice(
+					$.is_statement,
+					$.if_statement,
+					$.text,
+				),
 			),
 		command: ($) =>
 			seq('(', field('words', $.command_words), ')'),
@@ -253,10 +270,15 @@ module.exports = grammar({
 			seq(
 				'if',
 				'(',
-				$.conditional,
+				field('conditional', $.conditional),
 				')',
-				$.block,
-				optional(seq('else', $.block)),
+				field('if_block', $.block),
+				optional(
+					seq(
+						'else',
+						field('else_block', $.block),
+					),
+				),
 			),
 		conditional: ($) =>
 			choice(
@@ -292,6 +314,7 @@ module.exports = grammar({
 			),
 		_start_text: () => '{',
 		_end_text: () => '}',
+
 		words: () => field('words', /[^\s{}()]+/),
 		code: ($) =>
 			field(
