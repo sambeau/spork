@@ -1,0 +1,49 @@
+either (dog is alive) [
+	{(dog) bounds up to you}
+] or [
+	{(dog) is covered in flies}
+]
+
+
+{[
+	if (dog is alive) [
+		{{dog} bounds up to you}
+	] otherwise [
+		{{dog} is covered in flies}
+	]
+]}
+
+
+{[
+	if (here is lit) {
+		a (large) bright room
+	} else {
+		a (dark) echoing space
+	}
+]}
+
+
+if (expression) [ code_statments ] else [ code_statments ]
+
+code statements:
+
+if
+{text}
+x is y
+
+
+espression:
+if (x is y)
+if (x is not y)
+if ((x is y) and (z is y))
+or
+
+for (x in y)
+if (x in y)
+
++ - * /
+
+
+when x
+	(it is blue)[ { blah }]
+	(it is red) [ { blah }]
