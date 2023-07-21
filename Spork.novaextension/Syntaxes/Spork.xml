@@ -86,6 +86,7 @@
 				<string>describe</string>
 				<string>as</string>
 				<string>exits</string>
+				<string>none</string>
 				<string>north</string>
 				<string>south</string>
 				<string>east</string>
