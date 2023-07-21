@@ -4,6 +4,7 @@ const fs = require('fs')
 const { argv } = require('node:process')
 
 const { parseGameCode } = require('./app/parse.js')
+const { checkParseTreeForErrors, checkGameForErrors } = require('./app/check.js')
 const { evalGame } = require('./app/eval.js')
 const { runGame } = require('./app/run.js')
 
@@ -25,14 +26,25 @@ const main = () => {
 	}
 
 	const parseTree = parseGameCode(sourceCode)
-	const game = evalGame(parseTree)
+
+	const syntaxErrors = checkParseTreeForErrors(parseTree)
+	syntaxErrors.forEach(e => console.log(e))
+
+	const [game, evalErrors] = evalGame(parseTree)
+	evalErrors.forEach(e => console.log(e))
+
+	const symanticErrors = checkGameForErrors(game)
+	symanticErrors.forEach(e => console.log(e))
 
 	// game.entities = null
 	// console.log(
-	// 	JSON.stringify(game.entities['shed'], null, 2),
+	// 	JSON.stringify(game.entities['flowers'], null, 2),
 	// )
 
-	runGame(game)
+	if (syntaxErrors.length > 0 || evalErrors.length > 0 || symanticErrors.length > 0)
+		process.exit(1)
+	else
+		runGame(game)
 }
 
 main()

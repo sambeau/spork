@@ -4,7 +4,7 @@ game scarbarrow-incident [
 	by {Sam Phillips}
 
 	version 0.1
-	created {{today}}
+	created {today}
 
 	{
 		# Welcome
@@ -18,7 +18,6 @@ game scarbarrow-incident [
 	basement is dark
 
 	start in shed
-
 
 	object dogs (dogs) [
 		they are not barking
@@ -93,7 +92,7 @@ game scarbarrow-incident [
 			on(talk to it)[
 				{he stares back at you without moving}
 			]
-			on(break|smash|kick)[
+			on((break|smash|kick) it)[
 				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
 			]
 		]
@@ -127,7 +126,7 @@ game scarbarrow-incident [
 		object carrots (carrots) [
 			{rows of tasty-looking carrots}
 		]
-		object carrots (cabbages) [
+		object cabbages (cabbages) [
 			{fat, green and purple cabbages}
 		]
 		object beans (beans) [
@@ -171,7 +170,7 @@ game scarbarrow-incident [
 			{a hefty iron range}
 		]
 		object rug (rug) [
-			is not rolled-up
+			// is not rolled-up
 			{a small frayed rug}
 		]
 		exits
@@ -189,7 +188,7 @@ game scarbarrow-incident [
 		exits
 			north to kitchen,
 			west to living-room,
-			east to dining-room,
+			east to dining-room
 	//		up to landing
 	]
 

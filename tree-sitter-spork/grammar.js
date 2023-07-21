@@ -149,16 +149,19 @@ module.exports = grammar({
 					field('text', $.text),
 					field('exits', $.exits_statement),
 					field('object', $.object),
+					field('on', $.on_statement),
 				),
 			),
 		//
 		exits_statement: ($) =>
 			seq(
-				'exits',
-				seq(
-					$.exit_def,
-					repeat(seq(',', $.exit_def)),
-				),
+				'exits', choice(
+					field('none', 'none'),
+
+					seq(
+						$.exit_def,
+						repeat(seq(',', $.exit_def)),
+					)),
 			),
 		exit_def: ($) =>
 			seq(

@@ -1,36 +1,18 @@
 const { commandToRegex } = require('./command.js')
+const { gameError } = require('./error.js')
 
 let parseTree
-const error = (node, text) => {
-	const sourceCode = parseTree.input // this is ugly
-	const sourceLines = sourceCode.split('\n')
-	const errorLine = sourceLines[node.startPosition.row]
 
-	console.log(
-		'syntax error:',
-		text,
-		'\n  at',
-		'line',
-		node.startPosition.row,
-		':',
-		node.startPosition.column,
-		'\n  >>' + errorLine,
-	)
-	process.exit(1)
+let errors = []
+
+const getNodeValue = (node) => {
+	return node[node.length - 1]?.valueNode
 }
-
-const getNodeValue = (node) =>
-	node[node.length - 1].valueNode
-
 const evalTitle = (scope, game) => {
-	if (game.titleNodes.length === 0)
-		error(game, 'game has no title')
 	return evalText(scope, getNodeValue(game.titleNodes))
 }
 
 const evalAuthor = (scope, game) => {
-	if (game.authorNodes.length === 0)
-		error(game, 'game has no author')
 	return evalText(scope, getNodeValue(game.authorNodes))
 }
 
@@ -45,7 +27,7 @@ const evalDate = (date) => {
 }
 
 const evalVersion = (scope, game) => {
-	return Number(getNodeValue(game.versionNodes).text)
+	return Number(getNodeValue(game?.versionNodes)?.text)
 }
 
 const upDateEntitiesFacts = (scope, extraFacts) => {
@@ -64,9 +46,18 @@ const upDateEntitiesFacts = (scope, extraFacts) => {
 }
 
 const evalLocation = (scope, loc) => {
-	const name = loc.nameNode.text
+
+	const name = loc.nameNode?.text
+
+	if (name === '') {
+		errors.push(gameError(`location has no name`, loc))
+	}
+
 	const location = {
+		type: 'location',
 		name: name,
+		game: scope,
+		startPosition: loc.startPosition,
 	}
 
 	location.facts = {}
@@ -98,6 +89,10 @@ const evalLocations = (scope, locs) => {
 	let locations = {}
 	locs.forEach((loc) => {
 		const location = evalLocation(scope, loc)
+
+		if (location.name && location.name in locations)
+			errors.push(gameError(`location '${location.name}' already exists`, loc))
+
 		locations[location.name] = location
 	})
 	return locations
@@ -133,6 +128,7 @@ const evalTextChoice = (scope, textChoice) => {
 }
 
 const evalDescribe = (scope, describeNodes) => {
+
 	let descriptions = {}
 	if (!describeNodes || describeNodes?.length === 0)
 		return
@@ -156,12 +152,17 @@ const evalDescribe = (scope, describeNodes) => {
 
 const evalExit = (scope, exits) => {
 	const exit_defs = {}
-	exits.children.forEach((exit) => {
-		if (exit.type === 'exit_def')
+
+	if (exits?.noneNode)
+		return 'none'
+
+	exits?.children?.forEach((exit) => {
+		if (exit.type === 'exit_def') {
 			exit_defs[exit.directionNode.text] = {
 				direction: exit.directionNode.text,
 				to: exit.locationNode.text,
 			}
+		}
 	})
 	// console.log(exit_defs)
 
@@ -173,10 +174,15 @@ const evalObject = (scope, obj) => {
 	// 	console.log(obj.fields)
 
 	const name = obj.nameNode.text
+	if (name === '') {
+		errors.push(gameError(`object has no name`, obj))
+	}
 	const object = {
-		// defs: loc.isNodes,
+		type: 'object',
 		name: name,
 		noun: obj.nounNode.text,
+		startPosition: obj.startPosition,
+		game: scope,
 	}
 
 	object.describe = evalDescribe(scope, obj.describeNodes)
@@ -211,6 +217,10 @@ const evalObjects = (scope, objs) => {
 	let objects = {}
 	objs?.forEach((obj) => {
 		const object = evalObject(scope, obj)
+
+		if (object.name && object.name in objects)
+			errors.push(gameError(`object '${object.name}' already exists`, obj))
+
 		objects[object.name] = object
 	})
 	return objects
@@ -294,14 +304,11 @@ const evalFacts = (scope, current, facts) => {
 }
 
 const evalStart = (scope, game) => {
-	if (game.startNodes.length === 0)
-		error(game, 'game has no start')
-	return game.startNodes[game.startNodes.length - 1]
-		.locationNode.text
+	return game.startNodes[game.startNodes.length - 1]?.locationNode?.text
 }
 
 const evalText = (scope, textNode) => {
-	return textNode.children.map((w) => {
+	return textNode?.children?.map((w) => {
 		// console.log('describe:', w.type)
 		if (w.type === 'code')
 			return {
@@ -332,7 +339,7 @@ const evalText = (scope, textNode) => {
 const evalTexts = (scope, textNodes) => {
 	let texts = []
 	let first = true
-	textNodes.forEach((n) => {
+	textNodes?.forEach((n) => {
 		if (!first) {
 			texts.push({ type: 'paragraph' })
 		}
@@ -366,10 +373,12 @@ const evalGame = (game) => {
 		),
 		entities: {},
 	}
-	if (game.type !== 'game')
-		error(game.children[0], "'game' expected")
 
-	scope.name = game.gameNameNode.text
+	scope.name = game.gameNameNode?.text
+	if (scope.name === undefined) {
+		errors.push(gameError(`game has no name`, game))
+	}
+
 	scope.facts = {}
 	let extraFacts = evalFacts(
 		scope,
@@ -396,7 +405,7 @@ const evalGame = (game) => {
 	upDateEntitiesFacts(scope, extraFacts)
 
 	// console.log(JSON.stringify(scope, null, 2))
-	return scope
+	return [scope, errors]
 }
 
 module.exports = {

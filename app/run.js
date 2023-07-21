@@ -110,11 +110,12 @@ const runLocation = (game) => {
 			'here.',
 		)
 	}
-	console.log(
-		'There',
-		isAreArticalPlural('exit', exits.length),
-		list_formatter.format(exits) + '.',
-	)
+	if (exits !== 'none')
+		console.log(
+			'There',
+			isAreArticalPlural('exit', exits.length),
+			list_formatter.format(exits) + '.',
+		)
 	console.log('')
 }
 
@@ -185,11 +186,11 @@ const runOnCommands = (game, command) => {
 					// todo: actually run the command here
 					console.log(
 						'\n' +
-							runTexts(
-								object,
-								onCommand.text,
-							) +
-							'.\n',
+						runTexts(
+							object,
+							onCommand.text,
+						) +
+						'.\n',
 					)
 				}
 			})
