@@ -1,0 +1,132 @@
+  tiny:
+    ✗ [31mTest Game[0m
+  test:
+
+1 failure:
+
+[32mexpected[0m / [31mactual[0m
+
+  1. Test Game:
+[31m
+    (game
+      (name)
+      (title_def
+        (text
+          (words)
+          (words)
+          (words)))
+      (author_def
+        (text
+          (words)
+          (words)))
+      (version_def
+        (float))
+      (date_def
+        (text
+          (words)))
+      (location
+        (name)
+        (text
+          (words)
+          (textChoice
+            (textOrChoice
+              (name))
+            (textOrChoice
+              (name))))
+        (object
+          (name)
+          (name)
+          (text
+            (words)
+            (words)
+            (words)))
+        (ERROR
+          (subject
+            (name))
+          (UNEXPECTED 'r')
+          (UNEXPECTED 'r')
+          (UNEXPECTED 'm')
+          (UNEXPECTED 'h')
+          (subject))
+        (is_statement
+          (subject)
+          (boolean
+            (name)))
+        (text
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)
+          (words)))
+      (is_statement
+        (subject
+          (name))
+        (ERROR
+          (UNEXPECTED 'i')
+          (UNEXPECTED 'l')
+          (UNEXPECTED 'r')
+          (UNEXPECTED 'p'))
+        (boolean
+          (name)))
+      (ERROR
+        (subject)
+        (UNEXPECTED 'i')
+        (subject
+          (name))
+        (UNEXPECTED 'l'))
+      (is_statement
+        (subject)
+        (boolean
+          (name)))
+      (text
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words)
+        (words))
+      (ERROR
+        (UNEXPECTED 'p')
+        (UNEXPECTED 'n')
+        (UNEXPECTED 'k'))
+      (text
+        (words)
+        (words)
+        (textChoice
+          (textOrChoice
+            (name)
+            (name))
+          (textOrChoice
+            (name)
+            (name)))
+        (words)
+        (words))
+      (comment)
+      (comment)
+      (comment)
+      (ERROR))[0m
+[32m)[0m
+

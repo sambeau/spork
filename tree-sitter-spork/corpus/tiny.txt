@@ -2,10 +2,30 @@
 Test Game
 =====
 game scarbarrow-incident [
-	title {The Scarbarrow Incident {2}}
+	title {The Scarbarrow Incident}
 	by {Sam Phillips}
 
 	version 0.1
 	created {today}
+
+	location kitchen [
+		{hello (pal|chum)}
+
+		on(talk to it)[
+			{he stares back at you without moving}
+		]
+
+		object garden-gnome (gnome) [
+			it is not broken
+			{a brightly painted garden gnome carrying a fishing rod}
+			on(talk to it)[
+				{he stares back at you without moving}
+			]
+			on((break|smash|kick) it)[
+				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
+			]
+		]
+
+	]
 ]
 ---
