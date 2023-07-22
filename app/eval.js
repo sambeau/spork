@@ -175,9 +175,6 @@ const evalDescribe = (scope, describeNodes) => {
 }
 
 const evalObject = (scope, obj) => {
-	// if (obj.describeNodes.length > 0)
-	console.log(obj.fields)
-	console.log(obj.addNode)
 	let addObject = false
 	if (('addNode' in obj) && obj.addNode)
 		addObject = true
@@ -331,7 +328,19 @@ const evalBlockStatement = (scope, statement) => {
 				localUpdates: localUpdates,
 				namedUpdates: namedUpdates,
 			}
+		case 'add_statement':
+			return {
+				type: 'add',
+				objectName: statement.objectNode.text,
+				toName: statement.locationNode.text
+			}
+		case 'remove_statement':
+			return {
+				type: 'remove',
+				objectName: statement.objectNode.text,
+				fromName: statement.removeFromNodes.text
 
+			}
 		default:
 			console.log('no rule for:', statement.type)
 	}

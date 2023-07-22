@@ -94,22 +94,25 @@ game scarbarrow-incident [
 			]
 		]
 
+		object shards (shards)[
+			it is broken
+			{a pile of colourful clay shards. They may once have been a garden gnome}
+			on((talk|chat) to it)[
+				{are you really going to talk to a pile of broken pottery?}
+			]
+		]
+
 		add object garden-gnome (gnome) [
-			it is not broken
-			{[
-				if(it is not broken)[
-					{a brightly painted garden gnome carrying a fishing rod}
-				]
-				else [
-					{a pile of colourful clay shards. It might have been a gnome once.}
-				]
-			]}
+			{a brightly painted garden gnome carrying a fishing rod}
+
 			on((talk|chat) to it)[
 				{he stares back at you without moving}
 			]
 			on((break|smash|kick|kill) it)[
 				it is broken
 				gardener is angry
+				remove garden-gnome
+				add shards to garden
 				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
 			]
 		]

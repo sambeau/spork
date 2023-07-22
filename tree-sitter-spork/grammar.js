@@ -236,6 +236,8 @@ module.exports = grammar({
 				choice(
 					$.is_statement,
 					$.if_statement,
+					$.add_statement,
+					$.remove_statement,
 					$.text,
 				),
 			),
@@ -280,6 +282,16 @@ module.exports = grammar({
 						field('else_block', $.block),
 					),
 				),
+			),
+		add_statement: $ =>
+			choice(
+				field('add', seq('add', field('object', $.name))),
+				field('add_to', seq('add', field('object', $.name), 'to', field('location', $.name)))
+			),
+		remove_statement: $ =>
+			choice(
+				field('remove', seq('remove', field('object', $.name))),
+				field('remove_from', seq('remove', field('object', $.name), 'from', field('location', $.name)))
 			),
 		conditional: ($) =>
 			choice(

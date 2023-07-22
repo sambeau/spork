@@ -250,12 +250,21 @@ const runIf = (game, object, ifs) => {
 
 const runBlock = (object, block) => {
 	let outTexts = []
-	// console.log('runBlock:', block)
+	const game = object.game
+	const currentLoc = game.locations[game.location]
+
 	block.forEach((s) => {
+		const name = s.objectName
 		switch (s.type) {
 			case 'if':
 				const newBlock = runIf(object.game, object, s)
 				if (newBlock) outTexts.push(runBlock(object, newBlock))
+				break
+			case "add":
+				currentLoc.objects[name] = game.entities[name]
+				break
+			case 'remove':
+				delete currentLoc.objects[name]
 				break
 			case 'updates':
 				runUpdates(object.game, object, s)
