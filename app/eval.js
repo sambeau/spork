@@ -176,8 +176,11 @@ const evalDescribe = (scope, describeNodes) => {
 
 const evalObject = (scope, obj) => {
 	// if (obj.describeNodes.length > 0)
-	// 	console.log(obj.fields)
-
+	console.log(obj.fields)
+	console.log(obj.addNode)
+	let addObject = false
+	if (('addNode' in obj) && obj.addNode)
+		addObject = true
 	const name = obj.nameNode.text
 	if (name === '') {
 		errors.push(gameError(`object has no name`, obj))
@@ -214,14 +217,14 @@ const evalObject = (scope, obj) => {
 	// update extra facts
 	upDateEntitiesFacts(scope, extraFacts)
 
-	return object
+	return [object, addObject]
 }
 
 const evalObjects = (scope, objs) => {
 	// console.log(objs)
 	let objects = {}
 	objs?.forEach((obj) => {
-		const object = evalObject(scope, obj)
+		const [object, addObject] = evalObject(scope, obj)
 
 		if (object.name && object.name in objects)
 			errors.push(
@@ -231,7 +234,7 @@ const evalObjects = (scope, objs) => {
 				),
 			)
 
-		objects[object.name] = object
+		if (addObject) objects[object.name] = object
 	})
 
 	return objects

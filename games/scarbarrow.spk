@@ -36,11 +36,11 @@ game scarbarrow-incident [
 			a (messy|ramshackle) (shed)
 		}
 
-		object crowbar (crowbar)[
+		add object crowbar (crowbar)[
 			{a (hefty|sturdy) (iron|metal) crowbar}
 		]
 
-		object ship-bottle (bottle)[
+		add object ship-bottle (bottle)[
 
 			it is not broken
 
@@ -83,7 +83,7 @@ game scarbarrow-incident [
 			a (slightly|somewhat|rather) overgrown kitchen garden
 		}
 
-		object flowers (flowers) [
+		add object flowers (flowers) [
 			they are wilted
 			{slightly wilted roses}
 			on((smell|sniff) it)[
@@ -94,10 +94,17 @@ game scarbarrow-incident [
 			]
 		]
 
-		object garden-gnome (gnome) [
+		add object garden-gnome (gnome) [
 			it is not broken
-			{a brightly painted garden gnome carrying a fishing rod}
-			on(talk to it)[
+			{[
+				if(it is not broken)[
+					{a brightly painted garden gnome carrying a fishing rod}
+				]
+				else [
+					{a pile of colourful clay shards. It might have been a gnome once.}
+				]
+			]}
+			on((talk|chat) to it)[
 				{he stares back at you without moving}
 			]
 			on((break|smash|kick|kill) it)[
@@ -107,7 +114,7 @@ game scarbarrow-incident [
 			]
 		]
 
-		object watering-can (watering-can) [
+		add object watering-can (watering-can) [
 			{a rusty, green watering can}
 		]
 
@@ -122,7 +129,7 @@ game scarbarrow-incident [
 		{
 			a peaceful pond covered in lily-pads
 		}
-		object fishes (fishes) [
+		add object fishes (fishes) [
 			{golden fishes}
 		]
 		exits
@@ -133,13 +140,13 @@ game scarbarrow-incident [
 
 	location veg-patch [
 		{ a well-tended veg patch busting with cabbages and runner beans}
-		object carrots (carrots) [
+		add object carrots (carrots) [
 			{rows of tasty-looking carrots}
 		]
-		object cabbages (cabbages) [
+		add object cabbages (cabbages) [
 			{fat, green and purple cabbages}
 		]
-		object beans (beans) [
+		add object beans (beans) [
 			{runner beans dangling from trellises}
 		]
 		exits
@@ -159,10 +166,10 @@ game scarbarrow-incident [
 		{
 			a little orchard with a dozen apple and pear trees
 		}
-		object apples (apples) [
+		add object apples (apples) [
 			{bright red apples hanging from the tree}
 		]
-		object pears (pears) [
+		add object pears (pears) [
 			{juicy-looking golden pears}
 		]
 		exits
@@ -173,13 +180,13 @@ game scarbarrow-incident [
 		{
 			a country-style kitchen
 		}
-		object kitchen-table (table) [
+		add object kitchen-table (table) [
 			{a large oak table}
 		]
-		object range (range) [
+		add object range (range) [
 			{a hefty iron range}
 		]
-		object rug (rug) [
+		add object rug (rug) [
 			// is not rolled-up
 			{a small frayed rug}
 		]
@@ -191,7 +198,7 @@ game scarbarrow-incident [
 
 	location hall [
 		{a hallway with a tiled floor and a steep staircase}
-		object umbrella (umbrella) [
+		add object umbrella (umbrella) [
 			it is closed
 			{a black umbrella with a bone handle}
 		]
@@ -204,7 +211,7 @@ game scarbarrow-incident [
 
 	location living-room [
 		{a cosy living room with a handsome fireplace and a large sofa}
-		object sideboard (sideboard) [
+		add object sideboard (sideboard) [
 			{a wooden sideboard}
 		]
 		exits
@@ -215,15 +222,15 @@ game scarbarrow-incident [
 	location dining-room [
 		{a smart-looking dining room with a large polished table}
 
-		object teapot (teapot) [
+		add object teapot (teapot) [
 			it is not broken
 			{an old clay teapot}
 		]
-		object crockery (crockery) [
+		add object crockery (crockery) [
 			it is not broken
 			{fine china crockery}
 		]
-		object cutlery (cutlery) [
+		add object cutlery (cutlery) [
 			{silver cutlery}
 		]
 		exits
@@ -235,7 +242,7 @@ game scarbarrow-incident [
 		{a small study with a view down the garden to the orchard.
 			The walls are lined with books and there's a small desk by the window}
 
-		object books (books)[
+		add object books (books)[
 			{a variety of books}
 		]
 		exits
@@ -244,7 +251,7 @@ game scarbarrow-incident [
 
 	location conservatory [
 		{a glass conservatory with wicker chairs and a lovely view of the pond}
-		object torch (torch)[
+		add object torch (torch)[
 			{a hefty rubber torch}
 		]
 		exits
@@ -260,7 +267,7 @@ game scarbarrow-incident [
 		{
 			A dark and spooky basement
 		}
-		object junk (junk-pile)[
+		add object junk (junk-pile)[
 			{various boxes and crates}
 		]
 		exits

@@ -193,6 +193,7 @@ module.exports = grammar({
 
 		object: ($) =>
 			seq(
+				field('add', optional('add')),
 				'object',
 				field('name', $.name),
 				'(',
