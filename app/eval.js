@@ -233,6 +233,7 @@ const evalObjects = (scope, objs) => {
 
 		objects[object.name] = object
 	})
+
 	return objects
 }
 const evalSubject = (scope, subject) => {
@@ -428,11 +429,12 @@ const evalStart = (scope, game) => {
 const evalText = (scope, textNode) => {
 	return textNode?.children?.map((w) => {
 		// console.log('describe:', w.type)
-		if (w.type === 'code')
+		if (w.type === 'block') {
 			return {
-				type: 'code',
-				code: evalCode(scope, w.codeNodes),
+				type: 'block',
+				block: evalBlock(scope, w),
 			}
+		}
 		if (w.type === 'lookUp') {
 			// console.log('lookUp:', w)
 			// console.log('lookUp:', w.fields)

@@ -299,6 +299,7 @@ module.exports = grammar({
 					choice(
 						$.lookUp,
 						$.textChoice,
+						prec(2, $.block),
 						$.newline,
 						$.words,
 					),
@@ -308,7 +309,7 @@ module.exports = grammar({
 		_start_text: () => '{',
 		_end_text: () => '}',
 
-		words: () => field('words', /[^\s{}()]+/),
+		words: () => field('words', /[^\s{}()\[\]]+/),
 		code: ($) =>
 			field(
 				'code',

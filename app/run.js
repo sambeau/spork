@@ -5,6 +5,20 @@ const Articles = require('articles')
 
 const { say } = require('./say.js')
 
+const dumpObject = (game, entityName) => {
+	let obj = {}
+	if (!(entityName in game.entities)) {
+		console.log("no entity", entityName)
+		return
+	}
+	Object.keys(game.entities[entityName]).forEach((k) => {
+		if (k !== 'game') {
+			obj[k] = game.entities[entityName][k]
+		}
+	})
+	console.log(JSON.stringify(obj, null, 2))
+}
+
 const list_formatter = new Intl.ListFormat('en', {
 	style: 'long',
 	type: 'conjunction',
@@ -76,6 +90,8 @@ const runTexts = (scope, texts) => {
 		return out
 	}
 	switch (texts.type) {
+		case 'block':
+			return runBlock(scope, texts.block)
 		case 'string':
 			return texts.string
 		case 'lookup':
@@ -232,19 +248,20 @@ const runIf = (game, object, ifs) => {
 	return null
 }
 
-const runBlock = (game, object, block) => {
+const runBlock = (object, block) => {
 	let outTexts = []
+	// console.log('runBlock:', block)
 	block.forEach((s) => {
 		switch (s.type) {
 			case 'if':
-				const newBlock = runIf(game, object, s)
-				if (newBlock) outTexts.push(runBlock(game, object, newBlock))
+				const newBlock = runIf(object.game, object, s)
+				if (newBlock) outTexts.push(runBlock(object, newBlock))
 				break
 			case 'updates':
-				runUpdates(game, object, s)
+				runUpdates(object.game, object, s)
 				break
 			case 'text':
-				outTexts.push(runTexts(game, s.text))
+				outTexts.push(runTexts(object, s.text))
 				break
 		}
 	})
@@ -264,7 +281,6 @@ const runOnCommands = (game, command) => {
 				if (command.match(onCommand.regex)) {
 					understood = true
 					const texts = runBlock(
-						game,
 						object,
 						onCommand.block,
 					).join(' ')
@@ -337,6 +353,11 @@ const runGame = (game) => {
 	rl.prompt()
 	rl.on('line', (line) => {
 		const command = line.trim()
+		if (command[0] === '!') {
+			const m = command.match(/^!dump\s+(.*)\s*$/)
+			// console.log(m[1])
+			if (m) dumpObject(game, m[1])
+		}
 		switch (command) {
 			case '':
 				break
@@ -344,7 +365,6 @@ const runGame = (game) => {
 				console.log('Help here…')
 				break
 			case '!facts':
-				console.log(`game:`, game.facts)
 				Object.keys(game.entities).forEach((k) => {
 					console.log(
 						`${k}:`,
