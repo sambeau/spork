@@ -45,11 +45,11 @@ game scarbarrow-incident [
 			it is not broken
 
 			{[
-					if(it is broken)[
-						{a pile of broken glass and the remains of a model boat}
-					] else [
-						{an (old|ancient) glass bottle covered with (dust|grime)}
-					]
+				if(it is not broken)[
+					{an (old|ancient) glass bottle covered with (dust|grime)}
+				] else [
+					{a pile of broken glass and the remains of a model boat}
+				]
 			]}
 
 			on((drop|break|smash) it)[

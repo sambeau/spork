@@ -235,9 +235,9 @@ const runCondition = (game, object, condition) => {
 				subject = condition.subject.name
 			const negative = condition.boolean.negative
 			const factName = condition.boolean.name
-			let fact = game.entities[subject]?.facts[factName] // totdo checks
-			if (fact && !negative) return true
-			return false
+			let fact = game.entities[subject]?.facts[factName]
+			if (negative) fact = !fact
+			return fact
 	}
 	return true
 }
