@@ -86,7 +86,7 @@ const checkObject = (object) => {
 				object,
 			),
 		)
-
+	// TODO: check blocks for things like entities in 'add'
 	return errors
 }
 

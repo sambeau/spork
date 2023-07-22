@@ -40,20 +40,20 @@ game scarbarrow-incident [
 			{a (hefty|sturdy) (iron|metal) crowbar}
 		]
 
+		object broken-glass (glass)[
+			{a pile of broken glass and the remains of a model boat}
+		]
 		add object ship-bottle (bottle)[
 
 			it is not broken
 
-			{[
-				if(it is not broken)[
-					{an (old|ancient) glass bottle covered with (dust|grime)}
-				] else [
-					{a pile of broken glass and the remains of a model boat}
-				]
-			]}
+			{an (old|ancient) glass bottle covered with (dust|grime)}
+
 
 			on((drop|break|smash) it)[
 				it is broken
+				remove ship-bottle
+				add broken-glass
 				{It smashes into a thousand pieces to reveal
 					a tangled mess of wood, thread and paper}
 			]

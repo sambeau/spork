@@ -332,13 +332,13 @@ const evalBlockStatement = (scope, statement) => {
 			return {
 				type: 'add',
 				objectName: statement.objectNode.text,
-				toName: statement.locationNode.text
+				toName: statement.locationNode?.text
 			}
 		case 'remove_statement':
 			return {
 				type: 'remove',
 				objectName: statement.objectNode.text,
-				fromName: statement.removeFromNodes.text
+				fromName: statement.removeFromNodes?.text
 
 			}
 		default:

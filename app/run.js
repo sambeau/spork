@@ -261,10 +261,19 @@ const runBlock = (object, block) => {
 				if (newBlock) outTexts.push(runBlock(object, newBlock))
 				break
 			case "add":
+				if (!(name in game.entities)) {
+					console.log(name, "does not exist")
+					process.exit(1)
+				}
 				currentLoc.objects[name] = game.entities[name]
+				// console.log("NAME:", name)
+				// console.log("ENTITY:", game.entities[name])
+				// console.log("ADD:", currentLoc.objects)
+				// console.log("ALL:", game.entities)
 				break
 			case 'remove':
 				delete currentLoc.objects[name]
+				// console.log(currentLoc.objects)
 				break
 			case 'updates':
 				runUpdates(object.game, object, s)
@@ -286,7 +295,9 @@ const runOnCommands = (game, command) => {
 		location,
 		(objects, name) => {
 			const object = objects[name]
-			object.onCommands.forEach((onCommand) => {
+			// console.log(name)
+			// console.log(objects)
+			object.onCommands?.forEach((onCommand) => {
 				if (command.match(onCommand.regex)) {
 					understood = true
 					const texts = runBlock(

@@ -16,3 +16,8 @@
 -   debug mode
 -   imports
 -   saving
+
+
+
+CHECKS
+- entities in add & remove
