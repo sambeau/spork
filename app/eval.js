@@ -1,5 +1,6 @@
 const { commandToRegex } = require('./command.js')
 const { gameError } = require('./error.js')
+const { printNode } = require('./debug.js')
 
 let parseTree
 
@@ -234,12 +235,59 @@ const evalObjects = (scope, objs) => {
 	})
 	return objects
 }
+const evalSubject = (scope, subject) => {
+	if ('itNode' in subject && subject.itNode)
+		return {
+			type: "it"
+		}
+	if ('nameNode' in subject && subject.nameNode)
+		return {
+			type: "name",
+			name: subject.nameNode.text,
+		}
+}
+const evalBoolean = (scope, boolean) => {
+	let negative = false
+	if ("negativeNode" in boolean && boolean.negativeNode)
+		negative = true
 
-// const evalIf = (scope, ifStatement) => {
-//
-// }
+	return { type: "bool", negative: negative, name: boolean.valueNode.text }
+}
+
+const evalCondition = (scope, condition) => {
+	if ('orNode' in condition && condition.orNode) {
+		const orNode = condition.orNode
+		return {
+			type: 'or',
+			left: evalCondition(scope, orNode.leftNode),
+			right: evalCondition(scope, orNode.rightNode)
+		}
+	}
+	if ('andNode' in condition && condition.andNode) {
+		// printNode('fields', condition.andNode)
+		const andNode = condition.andNode
+		return {
+			type: 'and',
+			left: evalCondition(scope, andNode.leftNode),
+			right: evalCondition(scope, andNode.rightNode)
+		}
+	}
+	if ('isNode' in condition && condition.isNode) {
+		const isNode = condition.isNode
+		return {
+			type: "is",
+			subject: evalSubject(scope, isNode.subjectNode),
+			boolean: evalBoolean(scope, isNode.booleanNode),
+		}
+	}
+
+	gameError("invalid expression", condition.startPosition)
+	process.exit(1)
+}
+
+
 const evalBlockStatement = (scope, statement) => {
-	// console.log('statement:', statement)
+	// console.log('statement:', statement.fields)
 	switch (statement.type) {
 		case 'text':
 			return {
@@ -247,27 +295,27 @@ const evalBlockStatement = (scope, statement) => {
 				text: evalText(scope, statement),
 			}
 		case 'if_statement':
-			const condition = []
+			const condition = evalCondition(
+				scope,
+				statement.conditionalNode,
+			)
 
 			const ifBlock = evalBlock(
 				scope,
 				statement.ifBlockNode,
 			)
 
-			const elseBlock = null
-			if (statement.elseBlockNode)
-				evalBlock(scope, statement.elseBlockNode)
+			let elseBlock = null
+			if ("elseBlockNode" in statement && statement.elseBlockNode)
+				elseBlock = evalBlock(scope, statement.elseBlockNode)
 
 			return {
 				type: 'if',
-				condition: [],
+				condition: condition,
 				if: ifBlock,
 				else: elseBlock,
 			}
 		case 'is_statement':
-			// console.log(statement.subjectNode.fields) //[ 'itNode', 'nameNode' ]
-			// console.log(statement.valuesNodes)
-			// console.log(statement)
 			let localUpdates = {}
 			let namedUpdates = evalFacts(
 				scope,

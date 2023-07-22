@@ -207,10 +207,39 @@ const runUpdates = (game, object, updates) => {
 	}
 }
 
-const runBlock = (game, object, command) => {
+const runCondition = (game, object, condition) => {
+	switch (condition.type) {
+		case 'and':
+			return runCondition(game, object, condition.left) && runCondition(game, object, condition.right)
+		case 'or':
+			return runCondition(game, object, condition.left) || runCondition(game, object, condition.right)
+		case 'is':
+			let subject = object.name
+			if (condition.subject.type === 'name')
+				subject = condition.subject.name
+			const negative = condition.boolean.negative
+			const factName = condition.boolean.name
+			let fact = game.entities[subject]?.facts[factName] // totdo checks
+			if (fact && !negative) return true
+			return false
+	}
+	return true
+}
+const runIf = (game, object, ifs) => {
+	const result = runCondition(game, object, ifs.condition)
+	if (result === true) return ifs.if
+	if (ifs.else) return ifs.else
+	return null
+}
+
+const runBlock = (game, object, block) => {
 	let outTexts = []
-	command.block.forEach((s) => {
+	block.forEach((s) => {
 		switch (s.type) {
+			case 'if':
+				const newBlock = runIf(game, object, s)
+				if (newBlock) outTexts.push(runBlock(game, object, newBlock))
+				break
 			case 'updates':
 				runUpdates(game, object, s)
 				break
@@ -220,7 +249,7 @@ const runBlock = (game, object, command) => {
 		}
 	})
 	// console.log(game)
-	return outTexts.join(' ')
+	return outTexts
 }
 
 const runOnCommands = (game, command) => {
@@ -234,12 +263,11 @@ const runOnCommands = (game, command) => {
 			object.onCommands.forEach((onCommand) => {
 				if (command.match(onCommand.regex)) {
 					understood = true
-					// todo: actually run the command here
 					const texts = runBlock(
 						game,
 						object,
-						onCommand,
-					)
+						onCommand.block,
+					).join(' ')
 					console.log('\n' + texts + '\n')
 				}
 			})

@@ -13,3 +13,6 @@
 -   markdown?
 -   location kitchen ~ (dingy) kitchen
 -   object watering-can ~ (watering) can
+-   debug mode
+-   imports
+-   saving

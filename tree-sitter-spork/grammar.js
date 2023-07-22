@@ -75,7 +75,7 @@ module.exports = grammar({
 			),
 		subject: ($) =>
 			choice(
-				field('it', choice('it', 'they')),
+				field('it', choice('it', 'they', 'he', 'she')),
 				field('name', $.name),
 			),
 		//
@@ -282,20 +282,13 @@ module.exports = grammar({
 			),
 		conditional: ($) =>
 			choice(
-				prec.left(
-					2,
-					seq(
-						$.conditional,
-						'and',
-						$.conditional,
-					),
-				),
-				prec.left(
-					2,
-					seq($.conditional, 'or', $.conditional),
-				),
-				prec.left(1, $.is_statement),
+				field('and', $.and),
+				field('or', $.or),
+				field('is', $.is),
 			),
+		and: $ => prec.left(2, seq(field('left', $.conditional), 'and', field('right', $.conditional))),
+		or: $ => prec.left(2, seq(field('left', $.conditional), 'or', field('right', $.conditional))),
+		is: $ => prec.left(1, seq(field('subject', $.subject), choice('is', 'are'), field('boolean', $.boolean))),
 		//
 		lookUp: ($) =>
 			prec(2, seq('(', field('name', $.name), ')')), // higher precedence
