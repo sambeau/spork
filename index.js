@@ -39,14 +39,14 @@ const main = () => {
 	const symanticErrors = checkGameForErrors(game)
 	symanticErrors.forEach((e) => console.log(e))
 
-	// Object.keys(game.entities).forEach(
-	// 	(e) => (game.entities[e].game = null),
-	// )
+	Object.keys(game.entities).forEach(
+		(e) => (game.entities[e].game = null),
+	)
 	// game.entities = null
 	// console.log(
 	// 	JSON.stringify(
-	// 		game.locations['kitchen'].objects[
-	// 			'garden-gnome'
+	// 		game.locations['garden'].objects[
+	// 		'garden-gnome'
 	// 		],
 	// 		null,
 	// 		2,
