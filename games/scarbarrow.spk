@@ -72,12 +72,12 @@ game scarbarrow-incident [
 			on ((open|uncork) it)[
 				{You'd need (a corkscrew|an opener) for that}
 				// (25% chance of) [ // (1/3 of, 0.5 of)
-				// 	drop it!
+				// 	do (drop it)
 				// ]
 			]
 			// on (examine it)[
 			// 	describe it
-			// 	wipe it!
+			// 	do (wipe it)
 			// ]
 		]
 
