@@ -27,7 +27,7 @@ game scarbarrow-incident [
 		{Somewhere in the distance (dogs) are (barking)}
 	]
 	object gardener(gardener) [
-		it is not angry
+		he is not angry
 	]
 	location shed [
 
@@ -86,11 +86,19 @@ game scarbarrow-incident [
 		add object flowers (flowers) [
 			they are wilted
 			{slightly wilted roses}
-			on((smell|sniff) it)[
-				{they smell of flowers}
+			on((smell|sniff) them)[
+				if(they are not wilted)[
+					{they smell of flowers}
+				] else [
+					{they smell dried-out}
+				]
 			]
-			on((get|pick) it)[
+			on((get|pick) them)[
 				{ouch! They are too prickly to pick}
+			]
+			on(water them)[
+				{they seem to immediately spring back to life}
+				they are not wilted
 			]
 		]
 
