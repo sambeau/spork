@@ -85,7 +85,13 @@ game scarbarrow-incident [
 
 		add object flowers (flowers) [
 			they are wilted
-			{slightly wilted roses}
+			{[
+				if (they are wilted)[
+					{slightly wilted roses}
+				] else [
+					{perky red roses}
+				]
+			]}
 			on((smell|sniff) them)[
 				if(they are not wilted)[
 					{they smell of flowers}
@@ -96,7 +102,7 @@ game scarbarrow-incident [
 			on((get|pick) them)[
 				{ouch! They are too prickly to pick}
 			]
-			on(water them)[
+			on(water (them|roses))[
 				{they seem to immediately spring back to life}
 				they are not wilted
 			]
@@ -120,8 +126,10 @@ game scarbarrow-incident [
 				it is broken
 				gardener is angry
 				remove garden-gnome
-				add shards to garden
-				{the poor gnome shatters into pieces. That was a bit violent. Are you feeling better now?}
+				add shards
+				{ the poor gnome shatters into pieces.
+					That was a bit violent.
+					Are you feeling better now? }
 			]
 		]
 
