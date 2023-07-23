@@ -1,5 +1,9 @@
 # TODO
 
+-   imports
+-   can be (opened, carried, broken, etc.)
+	- checks for general, e.g. trying to talk to something that doesn't talk
+		- so you don't get "sorry I don't understand", instead you get "there's no gnome here" or "table doen't know how to talk"
 -   organise newlines, fullstops etc
 -   capitals at beginning of texts
 -   add date type
@@ -16,8 +20,10 @@
 -   debug mode
 -   imports
 -   saving
+-   work out ho to deal with plurals like "(broken) glass" vs "a glass"
 
 
 
 CHECKS
-- entities in add & remove
+X entities in add & remove
+/ line numbers in all nodes (add as needed)
