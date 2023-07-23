@@ -53,12 +53,19 @@ The working subset of the language currently looks like this, though the final l
 			object broken-glass (glass)[
 				{a pile of broken glass and the remains of a model boat}
 			]
+
 			add object ship-bottle (bottle)[
 
-				it is not broken
+				it is not clean, not broken
 
-				{an (old|ancient) glass bottle covered with (dust|grime)}
-
+				{[
+					{an (old|ancient) glass bottle}
+					if(it is clean)[
+						{with an intricate model ship inside}
+					] else [
+						{covered with (dust|grime)}
+					]
+				]}
 
 				on((drop|break|smash) it)[
 					it is broken
@@ -69,8 +76,9 @@ The working subset of the language currently looks like this, though the final l
 				]
 				on((wipe|clean|rub|polish) it (with sleeve))[
 					it is clean
-					{You remove the dust to revel the contents of
-						the bottle—an intricate model ship with sails and rigging}
+					{You remove the dust to reveal the contents of
+						the bottle — an intricate model ship
+						with sails and rigging}
 				]
 				on ((open|uncork) it)[
 					{You'd need (a corkscrew|an opener) for that}
@@ -120,7 +128,8 @@ The working subset of the language currently looks like this, though the final l
 
 			object shards (shards)[
 				it is broken
-				{a pile of colourful clay shards. They may once have been a garden gnome}
+				{a pile of colourful clay shards.
+					They may once have been a garden gnome}
 				on((talk|chat) to it)[
 					{are you really going to talk to a pile of broken pottery?}
 				]
