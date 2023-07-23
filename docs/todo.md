@@ -1,5 +1,10 @@
 # TODO
 
+## BUGS
+- infinite loop on {foo bar wibble [if(x)[{boink}]]}
+
+## TODOS
+
 -   imports
 -   can be (opened, carried, broken, etc.)
 	- checks for general, e.g. trying to talk to something that doesn't talk
@@ -25,6 +30,7 @@
 -   work out ho to deal with plurals like "(broken) glass" vs "a glass"
 
 
-CHECKS
+## CHECKS
+
 X entities in add & remove
 / line numbers in all nodes (add as needed)
