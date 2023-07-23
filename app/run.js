@@ -5,15 +5,18 @@ const Articles = require('articles')
 
 const { say } = require('./say.js')
 
+
+let gameScope
+
 const dumpObject = (game, entityName) => {
 	let obj = {}
-	if (!(entityName in game.entities)) {
+	if (!(entityName in gameScope.entities)) {
 		console.log("no entity", entityName)
 		return
 	}
-	Object.keys(game.entities[entityName]).forEach((k) => {
+	Object.keys(gameScope.entities[entityName]).forEach((k) => {
 		if (k !== 'game') {
-			obj[k] = game.entities[entityName][k]
+			obj[k] = gameScope.entities[entityName][k]
 		}
 	})
 	console.log(JSON.stringify(obj, null, 2))
@@ -105,7 +108,7 @@ const runTexts = (scope, texts) => {
 }
 
 const runLocation = (game) => {
-	const location = game.locations[game.location]
+	const location = gameScope.locations[gameScope.location]
 	let objectDescriptions = mapLocationObjects(
 		game,
 		location,
@@ -150,11 +153,11 @@ const runUpdate = (game) => {
 }
 
 const runSetup = (game) => {
-	console.log('\n' + runTexts(game, game.title))
-	console.log('\nBy', runTexts(game, game.author))
-	console.log('\n' + runTexts(game, game.text))
+	console.log('\n' + runTexts(game, gameScope.title))
+	console.log('\nBy', runTexts(game, gameScope.author))
+	console.log('\n' + runTexts(game, gameScope.text))
 
-	game.location = game.start
+	gameScope.location = gameScope.start
 
 	runUpdate(game)
 }
@@ -211,12 +214,12 @@ const runUpdates = (game, object, updates) => {
 			if (!isObjectEmpty(named[entity]))
 				Object.keys(named[entity]).forEach((k) => {
 					const value = named[entity][k]
-					if (!(entity in game.entities)) {
+					if (!(entity in gameScope.entities)) {
 						console.log(
 							`WARN: can't make ${entity} ${k}=${value} as there is no ${entity} entity`,
 						)
 					} else
-						game.entities[entity].facts[k] =
+						gameScope.entities[entity].facts[k] =
 							value
 				})
 		})
@@ -235,7 +238,7 @@ const runCondition = (game, object, condition) => {
 				subject = condition.subject.name
 			const negative = condition.boolean.negative
 			const factName = condition.boolean.name
-			let fact = game.entities[subject]?.facts[factName]
+			let fact = gameScope.entities[subject]?.facts[factName]
 			if (negative) fact = !fact
 			return fact
 	}
@@ -250,8 +253,8 @@ const runIf = (game, object, ifs) => {
 
 const runBlock = (object, block) => {
 	let outTexts = []
-	const game = object.game
-	const currentLoc = game.locations[game.location]
+
+	const currentLoc = gameScope.locations[gameScope.location]
 
 	block.forEach((s) => {
 		const name = s.objectName
@@ -261,15 +264,11 @@ const runBlock = (object, block) => {
 				if (newBlock) outTexts.push(runBlock(object, newBlock))
 				break
 			case "add":
-				if (!(name in game.entities)) {
+				if (!(name in gameScope.entities)) {
 					console.log(name, "does not exist")
 					process.exit(1)
 				}
-				currentLoc.objects[name] = game.entities[name]
-				// console.log("NAME:", name)
-				// console.log("ENTITY:", game.entities[name])
-				// console.log("ADD:", currentLoc.objects)
-				// console.log("ALL:", game.entities)
+				currentLoc.objects[name] = gameScope.entities[name]
 				break
 			case 'remove':
 				delete currentLoc.objects[name]
@@ -288,7 +287,7 @@ const runBlock = (object, block) => {
 }
 
 const runOnCommands = (game, command) => {
-	const location = game.locations[game.location]
+	const location = gameScope.locations[gameScope.location]
 	let understood = false
 	forEachLocationObjects(
 		game,
@@ -320,7 +319,7 @@ const isDirection = (d) => d.match(directionsRx) !== null
 
 const runCommand = (game, command) => {
 	// returns 'new rooom'
-	const location = game.locations[game.location]
+	const location = gameScope.locations[gameScope.location]
 	command = cleanCommand(command)
 
 	if (runOnCommands(game, command)) return false
@@ -331,7 +330,7 @@ const runCommand = (game, command) => {
 			location.exits,
 		)) {
 			if (direction === command) {
-				game.location = exit.to
+				gameScope.location = exit.to
 				return true
 			}
 		}
@@ -367,7 +366,7 @@ const runGame = (game) => {
 		output: process.stdout,
 		prompt: '>> ',
 	})
-
+	gameScope = game
 	runSetup(game)
 
 	rl.prompt()
@@ -385,15 +384,15 @@ const runGame = (game) => {
 				console.log('Help here…')
 				break
 			case '!facts':
-				Object.keys(game.entities).forEach((k) => {
+				Object.keys(gameScope.entities).forEach((k) => {
 					console.log(
 						`${k}:`,
-						game.entities[k].facts,
+						gameScope.entities[k].facts,
 					)
 				})
 				break
 			case '!here':
-				console.log(game.locations[game.location])
+				console.log(gameScope.locations[gameScope.location])
 
 			case 'quit!':
 				console.log('Bye!')

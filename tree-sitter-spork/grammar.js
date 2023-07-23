@@ -253,7 +253,7 @@ module.exports = grammar({
 					field('name', $.name),
 				),
 			),
-		it: () => 'it',
+		it: () => choice('it', 'them', 'him', 'her'),
 		thing: () => 'thing',
 		optional_words: ($) =>
 			seq('(', field('words', repeat1($.name)), ')'),

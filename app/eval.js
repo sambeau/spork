@@ -3,6 +3,7 @@ const { gameError } = require('./error.js')
 const { printNode } = require('./debug.js')
 
 let parseTree
+let gameScope
 
 let errors = []
 
@@ -245,6 +246,8 @@ const evalSubject = (scope, subject) => {
 		return {
 			type: "name",
 			name: subject.nameNode.text,
+			startPosition: subject.startPosition,
+			game: gameScope
 		}
 }
 const evalBoolean = (scope, boolean) => {
@@ -327,19 +330,21 @@ const evalBlockStatement = (scope, statement) => {
 				type: 'updates',
 				localUpdates: localUpdates,
 				namedUpdates: namedUpdates,
+				startPosition: statement.startPosition
 			}
 		case 'add_statement':
 			return {
 				type: 'add',
 				objectName: statement.objectNode.text,
-				toName: statement.locationNode?.text
+				toName: statement.locationNode?.text,
+				startPosition: statement.startPosition
 			}
 		case 'remove_statement':
 			return {
 				type: 'remove',
 				objectName: statement.objectNode.text,
-				fromName: statement.removeFromNodes?.text
-
+				fromName: statement.removeFromNodes?.text,
+				startPosition: statement.startPosition
 			}
 		default:
 			console.log('no rule for:', statement.type)
@@ -440,7 +445,6 @@ const evalStart = (scope, game) => {
 
 const evalText = (scope, textNode) => {
 	return textNode?.children?.map((w) => {
-		// console.log('describe:', w.type)
 		if (w.type === 'block') {
 			return {
 				type: 'block',
@@ -448,17 +452,11 @@ const evalText = (scope, textNode) => {
 			}
 		}
 		if (w.type === 'lookUp') {
-			// console.log('lookUp:', w)
-			// console.log('lookUp:', w.fields)
+
 			return { type: 'lookup', id: w.nameNode.text }
 		}
 		if (w.type === 'textChoice') {
-			// console.log('!!textChoice:', w)
-			// console.log(
-			// 	'!!textChoice:',
-			// 	w.textOrChoiceNodes,
-			// )
-			// console.log(evalTextChoice(scope, w))
+
 			return evalTextChoice(scope, w)
 		} else
 			return {
@@ -498,7 +496,7 @@ const evalGame = (game) => {
 	// console.log(game.children)
 	// console.log(game.fields)
 	parseTree = game
-	let scope = {
+	gameScope = {
 		today: new Date().toLocaleDateString(
 			undefined,
 			undefined,
@@ -506,38 +504,38 @@ const evalGame = (game) => {
 		entities: {},
 	}
 
-	scope.name = game.gameNameNode?.text
-	if (scope.name === undefined) {
+	gameScope.name = game.gameNameNode?.text
+	if (gameScope.name === undefined) {
 		errors.push(gameError(`game has no name`, game))
 	}
 
-	scope.facts = {}
+	gameScope.facts = {}
 	let extraFacts = evalFacts(
-		scope,
-		scope.facts,
+		gameScope,
+		gameScope.facts,
 		game.isNodes,
 	)
-	scope.title = evalTitle(scope, game)
-	scope.author = evalAuthor(scope, game)
-	scope.date = evalCreatedDate(scope, game)
-	scope.version = evalVersion(scope, game)
-	scope.objects = evalObjects(scope, game.objectNodes)
-	scope.text = evalTexts(scope, game.textNodes)
-	scope.start = evalStart(scope, game)
-	scope.describe = evalDescribe(scope, game.describeNodes)
+	gameScope.title = evalTitle(gameScope, game)
+	gameScope.author = evalAuthor(gameScope, game)
+	gameScope.date = evalCreatedDate(gameScope, game)
+	gameScope.version = evalVersion(gameScope, game)
+	gameScope.objects = evalObjects(gameScope, game.objectNodes)
+	gameScope.text = evalTexts(gameScope, game.textNodes)
+	gameScope.start = evalStart(gameScope, game)
+	gameScope.describe = evalDescribe(gameScope, game.describeNodes)
 	//
 	// do locations last
 	//
-	scope.locations = evalLocations(
-		scope,
+	gameScope.locations = evalLocations(
+		gameScope,
 		game.locationNodes,
 	)
 
 	// apply the extra facts
-	upDateEntitiesFacts(scope, extraFacts)
+	upDateEntitiesFacts(gameScope, extraFacts)
 
-	// console.log(JSON.stringify(scope, null, 2))
-	return [scope, errors]
+	// console.log(JSON.stringify(gameScope, null, 2))
+	return [gameScope, errors]
 }
 
 module.exports = {
