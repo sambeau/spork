@@ -43,12 +43,19 @@ game scarbarrow-incident [
 		object broken-glass (glass)[
 			{a pile of broken glass and the remains of a model boat}
 		]
+
 		add object ship-bottle (bottle)[
 
-			it is not broken
+			it is not clean, not broken
 
-			{an (old|ancient) glass bottle covered with (dust|grime)}
-
+			{[
+				{an (old|ancient) glass bottle}
+				if(it is clean)[
+					{with an intricate model ship inside}
+				] else [
+					{covered with (dust|grime)}
+				]
+			]}
 
 			on((drop|break|smash) it)[
 				it is broken
