@@ -6,7 +6,7 @@ Spork is a small interpreter for a text adventure language. It's basically a sli
 
 The language is more programmery than the new wave of prose-based languages and is heavily object-oriented (well, object, location, item-oriented), though I'd like to pretend it's entity-oriented.
 
-The working subset of the language currently looks like this, though the final language is far richer…
+The working subset of the language currently looks like this, though the final language is designed to be far richer…
 
 	game scarbarrow-incident [
 
