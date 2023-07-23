@@ -1,42 +1,3 @@
-either (dog is alive) [
-	{(dog) bounds up to you}
-] or [
-	{(dog) is covered in flies}
-]
-
-
-{[
-	if (dog is alive) [
-		{{dog} bounds up to you}
-	] otherwise [
-		{{dog} is covered in flies}
-	]
-]}
-
-
-{[
-	if (here is lit) {
-		a (large) bright room
-	} else {
-		a (dark) echoing space
-	}
-]}
-
-
-if (expression) [ code_statments ] else [ code_statments ]
-
-code statements:
-
-if
-{text}
-x is y
-
-
-espression:
-if (x is y)
-if (x is not y)
-if ((x is y) and (z is y))
-or
 
 for (x in y)
 if (x in y)
@@ -47,3 +8,77 @@ if (x in y)
 when x
 	(it is blue)[ { blah }]
 	(it is red) [ { blah }]
+
+kind openable [
+	it is closed
+	on (open it) [
+		it is open
+		exit to north
+	]
+	on (close it)[
+		it is closed
+		no exit to north
+	]
+]
+
+kind flammable [
+	it is flammable
+	on (burn it)[
+		{(it) catches fire}
+	]
+]
+
+kind metalic [
+	it is metalic
+	is a kind of sinkable // don't drop in the water!
+]
+
+kind pocketable [
+	is a kind of portable
+]
+
+kind key [
+	is a kind of pocketable
+	is a kind of shiny // for magpies
+	is a kind of metalic
+]
+
+kind lockable with key [
+	it is locked
+	on (unlock it with key)[
+		if( it is locked) [
+			it is unlocked
+			{the key fits perfectly and (this) unlocks}
+		] else [
+			{(it) is already locked}
+		]
+	]
+	on (lock it with key)[
+		it is locked
+			{the key fits perfectly and (this) locks}
+		] else [
+				{(it) is already unlocked}
+		]
+	on((lock|unlock) it with wrong key) [
+		{The key doesn't fit and (it) won't unlock}
+	]
+]
+
+object door with key [
+	is a kind of openable
+	is a kind of lockable with key
+]
+
+object kitchen-door ((kitchen) door) [
+	it is kind of door with gold-key
+	when (open it)[
+		add exit (south to hall)
+		add exit (north to kitchen) to hall
+	]
+	when (close it)[
+		remove exit (south)
+		remove exit (north) from hall
+	]
+]
+
+box has contents matches
